@@ -1,0 +1,13 @@
+Server:
+Realtime, memory only, no DB
+Notification codes should be static. save in a file? (yes)
+
+Windows/Android:
+App don't require login, just type the notification center code, notification senders type a password to be allowed in
+people monitoring the notification center can add a text to be notified about (regex)
+No custom notification centers for now, I'll add that later
+English and Portuguese UI (portuguese is the priority)
+
+Windows:
+WPF
+Display server for showing notifications on another screen.
