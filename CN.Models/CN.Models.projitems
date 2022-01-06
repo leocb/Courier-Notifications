@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Centrals\Field.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Centrals\Space.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\Message.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messages\MessageStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Users\User.cs" />
   </ItemGroup>
 </Project>
