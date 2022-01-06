@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using CN.Models.Messages;
 
 namespace CN.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SendMessageController : ControllerBase
+    public class MessageController : ControllerBase
     {
         [HttpPost(Name = "Send")]
-        public bool SendMessage(CN.Models.Messages.Message message)
+        public string SendMessage(Message message, Guid session)
         {
-            return true;
+            return "OK";
         }
     }
 }
