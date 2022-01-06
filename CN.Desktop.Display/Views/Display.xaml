@@ -1,0 +1,49 @@
+﻿<Window x:Class="CN.Desktop.Display.Views.Display"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CN.Desktop.Display.Views"
+        xmlns:properties="clr-namespace:CN.Desktop.Display.Properties"
+        mc:Ignorable="d"
+        Left="0"
+        Top="100"
+        DataContext="{x:Static properties:Settings.Default}"
+        Topmost="{Binding AlwaysVisible}"
+        WindowStartupLocation="Manual"
+        Background="{x:Null}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Title="Message Display"
+        SizeToContent="WidthAndHeight" ContentRendered="Window_ContentRendered">
+    <Window.Resources>
+        <Storyboard x:Key="TextAnimation" Storyboard.Target="{Binding ElementName=MessageText}" Completed="Storyboard_Completed">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin" Duration="0:0:1" FillBehavior="Stop" RepeatBehavior="2x"
+                                From="{Binding ActualWidth, ElementName=MessageText, Converter={StaticResource negativeSidesMarginConverter}}"
+                                To="{Binding ActualWidth, ElementName=MainGrid, Converter={StaticResource animationSidesMarginConverter}}"/>
+        </Storyboard>
+    </Window.Resources>
+    <Grid x:Name="MainGrid" Width="600">
+        <Grid.Background>
+            <SolidColorBrush Color="{Binding BackgroundColor}"/>
+        </Grid.Background>
+        <Label x:Name="MessageText"
+                Content="Message goes here, hello!"
+                Padding="10"
+                FontFamily="{Binding FontFamily, Mode=TwoWay}"
+                FontWeight="{Binding FontWeight, Mode=TwoWay}"
+                FontStyle="{Binding FontStyle, Mode=TwoWay}"
+                FontSize="{Binding FontSize, FallbackValue=60, Mode=TwoWay}"
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Center"
+                Margin="{Binding ActualWidth, ElementName=MessageText, Converter={StaticResource negativeSidesMarginConverter}}"
+                >
+
+            <Label.Foreground>
+                <SolidColorBrush Color="{Binding ForegroundColor}"/>
+            </Label.Foreground>
+        </Label>
+        
+    </Grid>
+</Window>
+

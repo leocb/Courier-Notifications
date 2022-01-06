@@ -1,0 +1,10 @@
+﻿<Application x:Class="CN.Desktop.Display.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CN.Desktop.Display"
+             StartupUri="Views/Main.xaml">
+    <Application.Resources>
+        <ResourceDictionary Source="Converters/ConverterResources.xaml"/>
+
+    </Application.Resources>
+</Application>
