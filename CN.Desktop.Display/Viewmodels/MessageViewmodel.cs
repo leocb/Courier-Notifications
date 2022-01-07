@@ -1,4 +1,5 @@
-﻿using CN.Models.Messages;
+﻿using CN.Desktop.Display.Providers;
+using CN.Models.Messages;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,60 +16,6 @@ using System.Windows.Threading;
 
 namespace CN.Desktop.Display.Viewmodels
 {
-    public static class MessagesViewmodel
-    {
-        public static ObservableCollection<MessageViewmodel> Messages { get; set; } = new ObservableCollection<MessageViewmodel>();
-        public static BlockingCollection<MessageViewmodel> DisplayMessages { get; set; } = new BlockingCollection<MessageViewmodel>();
-
-        private static Window? currentDisplay;
-
-        static MessagesViewmodel()
-        {
-            var displayTask = new Thread(() =>
-            {
-                while (true)
-                {
-                    var message = DisplayMessages.Take();
-                    if (message.Status != MessageStatus.Waiting) continue;
-                    message.Status = MessageStatus.BeingDisplayed;
-
-                    currentDisplay = new Views.Display(message.Text);
-                    var completed = currentDisplay.ShowDialog();
-                    currentDisplay = null;
-
-                    if (completed ?? false)
-                        message.Status = MessageStatus.OK;
-                    else
-                        message.Status = MessageStatus.Canceled;
-                }
-            });
-
-            displayTask.SetApartmentState(ApartmentState.STA);
-            displayTask.IsBackground = true;
-            displayTask.Start();
-
-            AddMessage(new Message() { Date = DateTime.Now, FromName = "Leonardo Bottaro", Text = "Mensagem marota" });
-
-        }
-
-        public static void AddMessage(Message message)
-        {
-            var msgVM = new MessageViewmodel(message);
-            msgVM.Status = MessageStatus.Waiting;
-            DisplayMessages.Add(msgVM);
-            Messages.Insert(0, msgVM);
-
-            while (Messages.Count > 50)
-                Messages.RemoveAt(50);
-
-        }
-
-        public static void StopCurrentMessageDisplay()
-        {
-            currentDisplay?.Dispatcher.Invoke(() => { currentDisplay.Close(); });
-        }
-    }
-
     public class MessageViewmodel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -158,18 +105,17 @@ namespace CN.Desktop.Display.Viewmodels
             switch (Status)
             {
                 case MessageStatus.None:
-                case MessageStatus.Waiting:
+                case MessageStatus.Waiting: // Block message
                     Status = MessageStatus.Canceled;
                     break;
-                case MessageStatus.BeingDisplayed:
-                    MessagesViewmodel.StopCurrentMessageDisplay();
+                case MessageStatus.BeingDisplayed: // Stop current display
+                    MessageDisplayManager.StopCurrentMessageDisplay();
                     break;
-                case MessageStatus.Canceled:
-                    Status = MessageStatus.Waiting;
-                    MessagesViewmodel.DisplayMessages.Add(this);
+                case MessageStatus.Canceled: // Allow message
+                    MessageDisplayManager.RestoreMessageToQueue(this);
                     break;
-                case MessageStatus.OK:
-                    MessagesViewmodel.AddMessage(new Message()
+                case MessageStatus.OK: // Duplicate message
+                    MessageDisplayManager.AddMessage(new Message()
                     {
                         FromName = $"{Message.FromName} [Dup]",
                         Text = Message.Text,
@@ -189,11 +135,11 @@ namespace CN.Desktop.Display.Viewmodels
                 {
                     case MessageStatus.None:
                     case MessageStatus.Waiting:
-                        return "Esperando";
+                        return "Na fila";
                     case MessageStatus.BeingDisplayed:
                         return "Cancelar";
                     case MessageStatus.Canceled:
-                        return "Permitir";
+                        return "Mostrar";
                     case MessageStatus.OK:
                         return "Duplicar";
                     default:
