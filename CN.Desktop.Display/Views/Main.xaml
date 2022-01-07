@@ -4,9 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CN.Desktop.Display"
+        xmlns:vm="clr-namespace:CN.Desktop.Display.Viewmodels"
         mc:Ignorable="d"
         Title="Courier Notifications Display Server" Height="450" Width="800"
         >
+    <Window.Resources>
+        <DataTemplate x:Key="messageTemplate">
+            <Border BorderThickness="0,1,0,0"  Background="{Binding Backcolor}" Padding="5" BorderBrush="#30000000">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Button Content="{Binding ButtonText}" Command="{Binding ClickCommand}"  Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="75" Margin="5,0" Padding="10,5" VerticalAlignment="Stretch" FontSize="11" UseLayoutRounding="False" Background="{Binding Backcolor}"/>
+
+                    <TextBlock Text="{Binding Info}" HorizontalAlignment="Left" Grid.Column="1" FontSize="8" Foreground="#CC000000"/>
+
+                    <TextBlock Text="{Binding Text}" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
     <Grid
         RenderOptions.ClearTypeHint="Auto"
         TextOptions.TextHintingMode="Fixed"
@@ -23,26 +46,7 @@
             <Label Content="Aguardando conexão com o servidor" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontSize="10"/>
         </StackPanel>
         <ScrollViewer Grid.Row="1">
-            <DataTemplate>
-                <Border Grid.RowSpan="2" Grid.ColumnSpan="2" BorderThickness="0,1,0,0"  Padding="5" BorderBrush="#30000000">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-
-                        <Button Content="Cancelar" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="80" Margin="5,0" Padding="10,5" VerticalAlignment="Stretch" FontSize="11"/>
-
-                        <TextBlock Text="22/12/2022 - 22:59:59 - Leonardo Bottaro" HorizontalAlignment="Left" Grid.Column="1" FontSize="8" Foreground="#CC000000"/>
-
-                        <TextBlock Text="Responsável por Jaime, 6 anos, 6288, Favor comparecer ao CasaKids" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"/>
-                    </Grid>
-                </Border>
-            </DataTemplate>
+            <ItemsControl ItemsSource="{Binding Source={x:Static vm:MessagesViewmodel.Messages}}" ItemTemplate="{StaticResource messageTemplate}"/>
         </ScrollViewer>
     </Grid>
 </Window>

@@ -12,9 +12,11 @@ namespace CN.Desktop.Display.Views
     /// </summary>
     public partial class Display : Window
     {
-        public Display()
+        public Display(string Text)
         {
             InitializeComponent();
+
+            MessageText.Content = Text;
 
             var displayToUse = Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Properties.Settings.Default.DisplayDeviceName);
             if (displayToUse == null) displayToUse = Screen.PrimaryScreen;
@@ -22,7 +24,6 @@ namespace CN.Desktop.Display.Views
             this.Left = displayToUse.Bounds.Left;
             this.Top = displayToUse.Bounds.Top;
             MainGrid.Width = displayToUse.Bounds.Width;
-
         }
 
         private void Window_ContentRendered(object sender, System.EventArgs e)
@@ -38,6 +39,7 @@ namespace CN.Desktop.Display.Views
 
         private void Storyboard_Completed(object sender, System.EventArgs e)
         {
+            if (this.IsVisible) DialogResult = true;
             Close();
         }
     }
