@@ -4,6 +4,7 @@ using System.Text;
 
 namespace CN.Models.Messages
 {
+    [Serializable]
     public class Message
     {
         public Guid Center { get; set; }
