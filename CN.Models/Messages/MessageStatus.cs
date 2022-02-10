@@ -12,6 +12,7 @@ namespace CN.Models.Messages
         Failed_SpaceNotFound,
         Failed_InvalidField,
         Failed_NoPermission,
+        Info,
         Waiting,
         BeingDisplayed,
         Canceled,
