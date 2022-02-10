@@ -1,6 +1,5 @@
 ﻿using CN.Desktop.Display.Viewmodels;
 using CN.Models.Messages;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -39,11 +38,9 @@ namespace CN.Desktop.Display.Providers
             displayTask.SetApartmentState(ApartmentState.STA);
             displayTask.IsBackground = true;
             displayTask.Start();
-
-
         }
 
-        public static void AddMessage(Message message)
+        public static void AddDisplayMessage(Message message)
         {
             var msgVM = new MessageViewmodel(message);
             msgVM.Status = MessageStatus.Waiting;
@@ -52,13 +49,10 @@ namespace CN.Desktop.Display.Providers
             {
                 DisplayMessages.Add(msgVM);
                 Messages.Insert(0, msgVM);
-
-                while (Messages.Count > 50)
-                    Messages.RemoveAt(50);
             });
         }
 
-        public static void AddInfoMessage(Message message, MessageStatus status = MessageStatus.Failed)
+        public static void AddInternalMessage(Message message, MessageStatus status = MessageStatus.Failed)
         {
             var msgVM = new MessageViewmodel(message);
             msgVM.Status = status;
@@ -66,9 +60,6 @@ namespace CN.Desktop.Display.Providers
             Application.Current.Dispatcher.Invoke(delegate
             {
                 Messages.Insert(0, msgVM);
-
-                while (Messages.Count > 50)
-                    Messages.RemoveAt(50);
             });
         }
 

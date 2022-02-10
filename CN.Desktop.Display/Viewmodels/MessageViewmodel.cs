@@ -1,18 +1,9 @@
 ﻿using CN.Desktop.Display.Providers;
 using CN.Models.Messages;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace CN.Desktop.Display.Viewmodels
 {
@@ -117,7 +108,7 @@ namespace CN.Desktop.Display.Viewmodels
                     MessageDisplayManager.RestoreMessageToQueue(this);
                     break;
                 case MessageStatus.OK: // Duplicate message
-                    MessageDisplayManager.AddMessage(new Message()
+                    MessageDisplayManager.AddDisplayMessage(new Message()
                     {
                         FromName = $"{Message.FromName} [Dup]",
                         Text = Message.Text,
