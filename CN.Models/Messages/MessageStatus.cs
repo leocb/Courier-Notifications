@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CN.Models.Messages
+﻿namespace CN.Models.Messages
 {
     public enum MessageStatus
     {

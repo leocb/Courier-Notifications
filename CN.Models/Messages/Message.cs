@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CN.Models.Messages
 {
     [Serializable]
     public class Message
     {
-        public Guid Center { get; set; }
-        public Guid Space { get; set; }
-        public Guid From { get; set; }
+        //public Guid Center { get; set; }
+        //public Guid Space { get; set; }
+        //public Guid From { get; set; }
         public DateTime Date { get; set; }
         public string Text { get; set; } = string.Empty;
         public string FromName { get; set; } = string.Empty;
