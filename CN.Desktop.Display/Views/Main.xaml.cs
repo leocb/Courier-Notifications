@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CN.Desktop.Display.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,11 @@ namespace CN.Desktop.Display.Views
         {
             var config = new Settings();
             config.ShowDialog();
+        }
+
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionManager.Open();
         }
     }
 }

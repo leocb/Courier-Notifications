@@ -43,6 +43,7 @@
         <StackPanel Orientation="Horizontal">
             <Button x:Name="ConfigBtn" Content="Configurações" Padding="10,3" Margin="5" HorizontalAlignment="Right" FontSize="10" Click="ConfigBtn_Click"/>
             <Label Content="Aguardando conexão com o servidor" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontSize="10"/>
+            <Button x:Name="Connect" Content="Connect" Padding="10,3" FontSize="10" Click="Connect_Click" />
         </StackPanel>
         <ScrollViewer Grid.Row="1"  UseLayoutRounding="True" > 
             <ItemsControl ItemsSource="{Binding Source={x:Static pv:MessageDisplayManager.Messages}}" ItemTemplate="{StaticResource messageTemplate}"/>

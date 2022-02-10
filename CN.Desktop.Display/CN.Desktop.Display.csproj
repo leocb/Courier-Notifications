@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.2.0" />
+    <PackageReference Include="WebSocket4Net" Version="0.15.2" />
     <PackageReference Include="WpfScreenHelper" Version="1.1.0" />
   </ItemGroup>
 
