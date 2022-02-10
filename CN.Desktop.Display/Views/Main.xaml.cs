@@ -1,18 +1,5 @@
 ﻿using CN.Desktop.Display.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CN.Desktop.Display.Views
 {
@@ -32,9 +19,9 @@ namespace CN.Desktop.Display.Views
             config.ShowDialog();
         }
 
-        private void Connect_Click(object sender, RoutedEventArgs e)
+        private void Window_ContentRendered(object sender, System.EventArgs e)
         {
-            ConnectionManager.Open();
+            ConnectionManager.OpenAllChannels();
         }
     }
 }

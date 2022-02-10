@@ -1,15 +1,14 @@
 ﻿using CN.Desktop.Display.Viewmodels;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows;
-using WebSocket4Net;
+using System.Windows.Threading;
 using System.Xml.Serialization;
-
+using WebSocket4Net;
 
 namespace CN.Desktop.Display.Providers
 {
@@ -17,95 +16,201 @@ namespace CN.Desktop.Display.Providers
     {
         public static ConnectionViewmodel Viewmodel { get; set; } = new ConnectionViewmodel();
         private static Random random = new Random();
+        private static ObservableCollection<WebSocket> webSockets = new ObservableCollection<WebSocket>();
 
         static ConnectionManager()
         {
-            Viewmodel.Status = "Initializing Connection";
+            Viewmodel.Status = Models.ConnectionStatus.None;
         }
 
-        public static void Open()
+        public static void OpenAllChannels()
         {
-            var ws = new WebSocket(Properties.Settings.Default.ServerUrl);
-            ws.Security.AllowCertificateChainErrors = true;
-            ws.Security.AllowUnstrustedCertificate = true;
-            ws.Security.AllowNameMismatchCertificate = true;
-            ws.Opened += OnWsOpen;
-            ws.Error += OnWsError;
-            ws.Closed += OnWsClose;
-            ws.MessageReceived += OnWsMessage;
-            ws.AutoSendPingInterval = 5;
-            ws.EnableAutoSendPing = true;
-            ws.Open();
-        }
 
-
-        public static string GetRandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        private static void OnWsMessage(object? sender, MessageReceivedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(e.Message)) return;
-            if (!e.Message.Contains("xml"))
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ServerUrl) ||
+                string.IsNullOrWhiteSpace(Properties.Settings.Default.ServerChannels))
             {
-                MessageDisplayManager.AddInfoMessage(new Models.Messages.Message()
-                { Text = e.Message, Date = DateTime.Now, FromName = "Websocket" },
-                Models.Messages.MessageStatus.Info);
+                Viewmodel.Status = Models.ConnectionStatus.Disconnected;
                 return;
             }
 
+            if (webSockets.Where(ws => ws.State == WebSocketState.Open).ToArray().Length > 0)
+            {
+                CloseAllChannels();
+            }
+
+            Viewmodel.Status = Models.ConnectionStatus.Connecting;
+
+            Properties.Settings.Default.Save();
+
+            // only allow Alphanumeric uppercase chars, - and , to be evaluated
+            var Channels = Regex.Replace(Properties.Settings.Default.ServerChannels.ToUpper(), @"([^A-Z0-9,\-])+", "").Split(",");
+
+            foreach (var Channel in Channels)
+            {
+                Open(Properties.Settings.Default.ServerUrl + Channel);
+            }
+
+            if (Channels.Length != webSockets.Where(ws => ws.State == WebSocketState.Open).ToArray().Length)
+            {
+                CloseAllChannels();
+                MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
+                { Text = $"Error: Some channels could not be connected.", Date = DateTime.Now, FromName = "Connection manager" });
+                Viewmodel.Status = Models.ConnectionStatus.Error;
+                return;
+            }
+
+            Viewmodel.Status = Models.ConnectionStatus.Connected;
+
+        }
+
+        public static void CloseAllChannels()
+        {
+            Viewmodel.Status = Models.ConnectionStatus.Disconnecting;
+
+            foreach (var ws in webSockets.Where(ws => ws.State == WebSocketState.Open).ToArray())
+            {
+                Close(ws);
+            };
+
+            webSockets.Clear();
+            Viewmodel.Status = Models.ConnectionStatus.Disconnected;
+        }
+
+        private static void Open(string serverUri)
+        {
             try
             {
-                var xml = new XmlSerializer(typeof(Models.Messages.Message));
-                Models.Messages.Message msg;
+                var ws = new WebSocket(serverUri);
+                ws.Security.AllowCertificateChainErrors = true;
+                ws.Security.AllowUnstrustedCertificate = true;
+                ws.Security.AllowNameMismatchCertificate = true;
+                ws.AutoSendPingInterval = 50;
+                ws.EnableAutoSendPing = true;
+                ws.Closed += OnWsClose;
+                ws.Opened += OnWsOpen;
+                ws.Error += OnWsError;
+                ws.MessageReceived += OnWsMessage;
+                ws.Open();
 
-                using (TextReader sr = new StringReader(e.Message))
+                while (ws.State == WebSocketState.Connecting)
                 {
-                    MessageDisplayManager.AddMessage((Models.Messages.Message)xml.Deserialize(sr));
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                 }
 
+                webSockets.Add(ws);
             }
             catch (Exception ex)
             {
-                MessageDisplayManager.AddInfoMessage(new Models.Messages.Message()
-                { Text = $"Error: {ex.Message}\nValue: {e.Message}", Date = DateTime.Now, FromName = "Message Error" });
+                MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
+                { Text = $"Error: {ex.Message}", Date = DateTime.Now, FromName = "Connection manager" });
+            }
+        }
+        private static void Close(WebSocket ws)
+        {
+            ws.Close("Connection terminated by the user");
+            while (ws.State == WebSocketState.Closing)
+            {
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
             }
         }
 
-        private static void OnWsOpen(object? sender, EventArgs e)
+
+        public static void SendMessageToAllChannels(string message, string fromName)
         {
-            var message = new Models.Messages.Message()
-            { FromName = "Leo", Date = DateTime.Now, Text = "Mensagem Marota." };
+            var messageModel = new Models.Messages.Message()
+            { FromName = fromName, Date = DateTime.Now, Text = message };
 
             var xml = new XmlSerializer(typeof(Models.Messages.Message));
             string xmlText;
 
             using (var sw = new StringWriter())
             {
-                xml.Serialize(sw, message);
+                xml.Serialize(sw, messageModel);
                 xmlText = sw.ToString();
             }
 
-            (sender as WebSocket)?.Send(xmlText);
+            foreach (var ws in webSockets)
+            {
+                ws.Send(xmlText);
+            }
+        }
 
-            MessageDisplayManager.AddInfoMessage(new Models.Messages.Message()
-            { Text = $"Connected!", Date = DateTime.Now, FromName = "Websocket" },
+        public static void SendInternalMessage(string message)
+        {
+            foreach (var ws in webSockets)
+            {
+                ws.Send(message);
+            }
+        }
+
+        public static string CreateRandomChannelID()
+        {
+            const int length = 16;
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var result = new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            return Regex.Replace(result, @"([A-Z0-9]{1,4})(?=(?:[A-Z0-9]{4}))+", @"$1-");
+        }
+
+        private static void OnWsMessage(object? sender, MessageReceivedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(e.Message)) return;
+
+            // Internal server message
+            if (!e.Message.Contains("xml"))
+            {
+                MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
+                { Text = e.Message, Date = DateTime.Now, FromName = "Websocket Server" },
+                e.Message.ToUpper().Contains("ERROR") ? Models.Messages.MessageStatus.Failed : Models.Messages.MessageStatus.Info);
+                return;
+            }
+
+            // xml means a properly formatted message, show on screen
+            try
+            {
+                var xml = new XmlSerializer(typeof(Models.Messages.Message));
+
+                using (TextReader sr = new StringReader(e.Message))
+                {
+                    MessageDisplayManager.AddDisplayMessage((Models.Messages.Message)xml.Deserialize(sr));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
+                { Text = $"Error: {ex.Message}\nValue: {e.Message}", Date = DateTime.Now, FromName = "Message Error" });
+            }
+        }
+
+        private static void OnWsOpen(object? sender, EventArgs e)
+        {
+            if (sender == null) return;
+
+            PropertyInfo itemProperty = typeof(WebSocket).GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Single(pi => pi.Name == "TargetUri");
+            var wsTarget = itemProperty.GetValue(sender, null) as Uri;
+
+            MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
+            { Text = $"Connected to {wsTarget?.ToString()}", Date = DateTime.Now, FromName = "Websocket" },
             Models.Messages.MessageStatus.Info);
         }
 
         private static void OnWsClose(object? sender, EventArgs e)
         {
-            MessageDisplayManager.AddInfoMessage(new Models.Messages.Message()
-            { Text = $"Connection Closed", Date = DateTime.Now, FromName = "Websocket" },
+            if (sender == null) return;
+
+            PropertyInfo itemProperty = typeof(WebSocket).GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Single(pi => pi.Name == "TargetUri");
+            var wsTarget = itemProperty.GetValue(sender, null) as Uri;
+
+            MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
+            { Text = $"Disconnected from {wsTarget?.ToString()}", Date = DateTime.Now, FromName = "Websocket" },
             Models.Messages.MessageStatus.Info);
         }
 
         private static void OnWsError(object? sender, SuperSocket.ClientEngine.ErrorEventArgs e)
         {
-            MessageDisplayManager.AddInfoMessage(new Models.Messages.Message()
+            MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
             { Text = $"Error: {e.Exception.Message}", Date = DateTime.Now, FromName = "Websocket" });
         }
 
