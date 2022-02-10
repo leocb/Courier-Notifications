@@ -39,17 +39,37 @@ namespace CN.Desktop.Display.Providers
             displayTask.SetApartmentState(ApartmentState.STA);
             displayTask.IsBackground = true;
             displayTask.Start();
+
+
         }
 
         public static void AddMessage(Message message)
         {
             var msgVM = new MessageViewmodel(message);
             msgVM.Status = MessageStatus.Waiting;
-            DisplayMessages.Add(msgVM);
-            Messages.Insert(0, msgVM);
 
-            while (Messages.Count > 50)
-                Messages.RemoveAt(50);
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                DisplayMessages.Add(msgVM);
+                Messages.Insert(0, msgVM);
+
+                while (Messages.Count > 50)
+                    Messages.RemoveAt(50);
+            });
+        }
+
+        public static void AddInfoMessage(Message message, MessageStatus status = MessageStatus.Failed)
+        {
+            var msgVM = new MessageViewmodel(message);
+            msgVM.Status = status;
+
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Messages.Insert(0, msgVM);
+
+                while (Messages.Count > 50)
+                    Messages.RemoveAt(50);
+            });
         }
 
         public static void RestoreMessageToQueue(MessageViewmodel message)

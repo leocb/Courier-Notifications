@@ -73,6 +73,8 @@ namespace CN.Desktop.Display.Viewmodels
                         return new SolidColorBrush(Color.FromArgb(255, 112, 180, 181));
                     case MessageStatus.Canceled:
                         return new SolidColorBrush(Color.FromArgb(255, 181, 199, 199));
+                    case MessageStatus.Info:
+                        return new SolidColorBrush(Color.FromArgb(255, 247, 247, 247));
                     case MessageStatus.OK:
                         return new SolidColorBrush(Color.FromArgb(255, 128, 207, 171));
                     default:
@@ -142,8 +144,10 @@ namespace CN.Desktop.Display.Viewmodels
                         return "Mostrar";
                     case MessageStatus.OK:
                         return "Duplicar";
+                    case MessageStatus.Info:
+                        return "Info";
                     default:
-                        return "?";
+                        return ":(";
                 }
             }
         }
