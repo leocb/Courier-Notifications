@@ -3,15 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Server", "CN.Server\CN.Server.csproj", "{02D39B6B-1138-4EF4-A1C6-68DC6B9AF46F}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CN.Models", "CN.Models\CN.Models.shproj", "{93389F29-B538-4017-A40D-4286A0253370}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Desktop.Display", "CN.Desktop.Display\CN.Desktop.Display.csproj", "{E02199C6-615E-4C61-971E-A839155AED8E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		CN.Models\CN.Models.projitems*{02d39b6b-1138-4ef4-a1c6-68dc6b9af46f}*SharedItemsImports = 5
 		CN.Models\CN.Models.projitems*{93389f29-b538-4017-a40d-4286a0253370}*SharedItemsImports = 13
 		CN.Models\CN.Models.projitems*{e02199c6-615e-4c61-971e-a839155aed8e}*SharedItemsImports = 5
 	EndGlobalSection
@@ -20,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{02D39B6B-1138-4EF4-A1C6-68DC6B9AF46F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02D39B6B-1138-4EF4-A1C6-68DC6B9AF46F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02D39B6B-1138-4EF4-A1C6-68DC6B9AF46F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02D39B6B-1138-4EF4-A1C6-68DC6B9AF46F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E02199C6-615E-4C61-971E-A839155AED8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E02199C6-615E-4C61-971E-A839155AED8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E02199C6-615E-4C61-971E-A839155AED8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
