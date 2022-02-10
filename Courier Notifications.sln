@@ -7,6 +7,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CN.Models", "CN.Models\CN.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Desktop.Display", "CN.Desktop.Display\CN.Desktop.Display.csproj", "{E02199C6-615E-4C61-971E-A839155AED8E}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "CN.Server", "CN.Server\CN.Server.pyproj", "{B5B717E6-EE67-4FE2-9772-C76C6E22E94D}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		CN.Models\CN.Models.projitems*{93389f29-b538-4017-a40d-4286a0253370}*SharedItemsImports = 13
@@ -21,6 +23,8 @@ Global
 		{E02199C6-615E-4C61-971E-A839155AED8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E02199C6-615E-4C61-971E-A839155AED8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E02199C6-615E-4C61-971E-A839155AED8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5B717E6-EE67-4FE2-9772-C76C6E22E94D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B717E6-EE67-4FE2-9772-C76C6E22E94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
