@@ -133,13 +133,25 @@ namespace CN.Desktop.Display.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ws://localhost:9091/ws/TestRoom")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ws://localhost:9091/ws/")]
         public string ServerUrl {
             get {
                 return ((string)(this["ServerUrl"]));
             }
             set {
                 this["ServerUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ServerChannels {
+            get {
+                return ((string)(this["ServerChannels"]));
+            }
+            set {
+                this["ServerChannels"] = value;
             }
         }
     }

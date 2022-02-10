@@ -30,7 +30,10 @@
       <Value Profile="(Default)">120</Value>
     </Setting>
     <Setting Name="ServerUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ws://localhost:9091/ws/TestRoom</Value>
+      <Value Profile="(Default)">ws://localhost:9091/ws/</Value>
+    </Setting>
+    <Setting Name="ServerChannels" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>
