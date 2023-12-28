@@ -145,12 +145,7 @@ namespace CN.Desktop.Display.Providers
 
         public static string CreateRandomChannelID()
         {
-            const int length = 16;
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var result = new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-
-            return Regex.Replace(result, @"([A-Z0-9]{1,4})(?=(?:[A-Z0-9]{4}))+", @"$1-");
+            return Guid.NewGuid().ToString();
         }
 
         private static void OnWsMessage(object? sender, MessageReceivedEventArgs e)
