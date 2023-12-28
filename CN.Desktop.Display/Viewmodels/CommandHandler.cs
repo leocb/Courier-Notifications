@@ -1,28 +1,21 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace CN.Desktop.Display.Viewmodels
+namespace CN.Desktop.Display.Viewmodels;
+
+public class CommandHandler : ICommand
 {
-    public class CommandHandler : ICommand
+    private readonly Action _action;
+    private readonly bool _canExecute;
+    public event EventHandler? CanExecuteChanged;
+
+    public CommandHandler(Action action, bool canExecute)
     {
-        private Action _action;
-        private bool _canExecute;
-        public event EventHandler? CanExecuteChanged;
-
-        public CommandHandler(Action action, bool canExecute)
-        {
-            _action = action;
-            _canExecute = canExecute;
-        }
-
-        public bool CanExecute(object? parameter)
-        {
-            return _canExecute;
-        }
-
-        public void Execute(object? parameter)
-        {
-            _action();
-        }
+        this._action = action;
+        this._canExecute = canExecute;
     }
+
+    public bool CanExecute(object? parameter) => this._canExecute;
+
+    public void Execute(object? parameter) => this._action();
 }

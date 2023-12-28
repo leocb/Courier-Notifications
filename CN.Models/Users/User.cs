@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace CN.Models.Users
+namespace CN.Models.Users;
+
+public class User
 {
-    public class User
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = "";
-    }
+    public Guid Id { get; set; }
+    public string Name { get; set; } = "";
 }

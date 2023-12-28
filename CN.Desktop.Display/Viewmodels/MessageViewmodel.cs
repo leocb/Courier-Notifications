@@ -1,147 +1,95 @@
-﻿using CN.Desktop.Display.Providers;
-using CN.Models.Messages;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace CN.Desktop.Display.Viewmodels
+using CN.Desktop.Display.Providers;
+using CN.Models.Messages;
+
+namespace CN.Desktop.Display.Viewmodels;
+
+public class MessageViewmodel : INotifyPropertyChanged
 {
-    public class MessageViewmodel : INotifyPropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void NotifyPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    public Message Message { get; set; }
+
+    public MessageViewmodel(Message message)
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public Message Message { get; set; }
-
-        public MessageViewmodel(Message message)
-        {
-            Message = message;
-        }
-
-        public string Text => Message.Text;
-        public string DateTimeText => Message.Date.ToString("dd/MM/yyyy hh:mm:ss");
-        public string From => Message.FromName;
-        public string Info => $"{DateTimeText} - {From}";
-        public MessageStatus Status
-        {
-            get
-            {
-                return Message.Status;
-            }
-            set
-            {
-                Message.Status = value;
-                NotifyPropertyChanged(nameof(Status));
-                NotifyPropertyChanged(nameof(ButtonText));
-                NotifyPropertyChanged(nameof(ButtonEnabled));
-                NotifyPropertyChanged(nameof(Backcolor));
-            }
-        }
-
-        public ICommand ClickCommand
-        {
-            get
-            {
-                return new CommandHandler(() => ButtonClickCmdHandler(), ButtonEnabled);
-            }
-        }
-
-        public Brush Backcolor
-        {
-            get
-            {
-                switch (Status)
-                {
-                    // https://coolors.co/fcecc9-ff8360-70b4b5-80cfab-b5c7c7
-                    case MessageStatus.Waiting:
-                        return new SolidColorBrush(Color.FromArgb(255, 252, 236, 201));
-                    case MessageStatus.BeingDisplayed:
-                        return new SolidColorBrush(Color.FromArgb(255, 112, 180, 181));
-                    case MessageStatus.Canceled:
-                        return new SolidColorBrush(Color.FromArgb(255, 181, 199, 199));
-                    case MessageStatus.Info:
-                        return new SolidColorBrush(Color.FromArgb(255, 247, 247, 247));
-                    case MessageStatus.OK:
-                        return new SolidColorBrush(Color.FromArgb(255, 128, 207, 171));
-                    default:
-                        return new SolidColorBrush(Color.FromArgb(255, 255, 131, 96));
-                }
-            }
-        }
-
-        private bool ButtonEnabled
-        {
-            get
-            {
-                switch (Status)
-                {
-                    case MessageStatus.None:
-                    case MessageStatus.Waiting:
-                    case MessageStatus.BeingDisplayed:
-                    case MessageStatus.Canceled:
-                    case MessageStatus.OK:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-
-
-        public void ButtonClickCmdHandler()
-        {
-            switch (Status)
-            {
-                case MessageStatus.None:
-                case MessageStatus.Waiting: // Block message
-                    Status = MessageStatus.Canceled;
-                    break;
-                case MessageStatus.BeingDisplayed: // Stop current display
-                    MessageDisplayManager.StopCurrentMessageDisplay();
-                    break;
-                case MessageStatus.Canceled: // Allow message
-                    MessageDisplayManager.RestoreMessageToQueue(this);
-                    break;
-                case MessageStatus.OK: // Duplicate message
-                    MessageDisplayManager.AddDisplayMessage(new Message()
-                    {
-                        FromName = $"{Message.FromName} [Dup]",
-                        Text = Message.Text,
-                        Date = DateTime.Now,
-                    });
-                    break;
-                default:
-                    return;
-            }
-        }
-
-        public string ButtonText
-        {
-            get
-            {
-                switch (Status)
-                {
-                    case MessageStatus.None:
-                    case MessageStatus.Waiting:
-                        return "Na fila";
-                    case MessageStatus.BeingDisplayed:
-                        return "Cancelar";
-                    case MessageStatus.Canceled:
-                        return "Mostrar";
-                    case MessageStatus.OK:
-                        return "Duplicar";
-                    case MessageStatus.Info:
-                        return "Info";
-                    default:
-                        return ":(";
-                }
-            }
-        }
-
+        this.Message = message;
     }
+
+    public string Text => this.Message.Text;
+    public string DateTimeText => this.Message.Date.ToString("dd/MM/yyyy hh:mm:ss");
+    public string From => this.Message.FromName;
+    public string Info => $"{this.DateTimeText} - {this.From}";
+    public MessageStatus Status
+    {
+        get => this.Message.Status;
+        set
+        {
+            this.Message.Status = value;
+            NotifyPropertyChanged(nameof(this.Status));
+            NotifyPropertyChanged(nameof(this.ButtonText));
+            NotifyPropertyChanged(nameof(this.ButtonEnabled));
+            NotifyPropertyChanged(nameof(this.Backcolor));
+        }
+    }
+
+    public ICommand ClickCommand => new CommandHandler(() => ButtonClickCmdHandler(), this.ButtonEnabled);
+
+    public Brush Backcolor => this.Status switch
+    {
+        // https://coolors.co/fcecc9-ff8360-70b4b5-80cfab-b5c7c7
+        MessageStatus.Waiting => new SolidColorBrush(Color.FromArgb(255, 252, 236, 201)),
+        MessageStatus.BeingDisplayed => new SolidColorBrush(Color.FromArgb(255, 112, 180, 181)),
+        MessageStatus.Canceled => new SolidColorBrush(Color.FromArgb(255, 181, 199, 199)),
+        MessageStatus.Info => new SolidColorBrush(Color.FromArgb(255, 247, 247, 247)),
+        MessageStatus.OK => new SolidColorBrush(Color.FromArgb(255, 128, 207, 171)),
+        _ => new SolidColorBrush(Color.FromArgb(255, 255, 131, 96)),
+    };
+
+    private bool ButtonEnabled => this.Status switch
+    {
+        MessageStatus.None or MessageStatus.Waiting or MessageStatus.BeingDisplayed or MessageStatus.Canceled or MessageStatus.OK => true,
+        _ => false,
+    };
+
+    public void ButtonClickCmdHandler()
+    {
+        switch (this.Status)
+        {
+            case MessageStatus.None:
+            case MessageStatus.Waiting: // Block message
+                this.Status = MessageStatus.Canceled;
+                break;
+            case MessageStatus.BeingDisplayed: // Stop current display
+                MessageDisplayManager.StopCurrentMessageDisplay();
+                break;
+            case MessageStatus.Canceled: // Allow message
+                MessageDisplayManager.RestoreMessageToQueue(this);
+                break;
+            case MessageStatus.OK: // Duplicate message
+                MessageDisplayManager.AddDisplayMessage(new Message()
+                {
+                    FromName = $"{this.Message.FromName} [Dup]",
+                    Text = this.Message.Text,
+                    Date = DateTime.Now,
+                });
+                break;
+            default:
+                return;
+        }
+    }
+
+    public string ButtonText => this.Status switch
+    {
+        MessageStatus.None or MessageStatus.Waiting => "Na fila",
+        MessageStatus.BeingDisplayed => "Cancelar",
+        MessageStatus.Canceled => "Mostrar",
+        MessageStatus.OK => "Duplicar",
+        MessageStatus.Info => "Info",
+        _ => ":(",
+    };
 }

@@ -1,12 +1,11 @@
-﻿namespace CN.Models
+﻿namespace CN.Models;
+
+public enum ConnectionStatus
 {
-    public enum ConnectionStatus
-    {
-        None,
-        Connected,
-        Disconnected,
-        Connecting,
-        Disconnecting,
-        Error
-    }
+    None,
+    Connected,
+    Disconnected,
+    Connecting,
+    Disconnecting,
+    Error
 }
