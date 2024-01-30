@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CN.Models.Centrals;
+namespace CN.Models.Servers;
 
-public class Space
+public class Channel
 {
     public Guid Id { get; set; }
     public List<Guid> AllowedDevices { get; set; } = new List<Guid>();

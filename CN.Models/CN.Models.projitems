@@ -9,12 +9,14 @@
     <Import_RootNamespace>CN.Models</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Centrals\Central.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Centrals\Field.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Centrals\Space.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)servers\Role.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Servers\Server.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Servers\Field.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Servers\Channel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectionStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\Message.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\MessageStatus.cs" />
+    <Compile Include="..\CN.Models\users\Permission.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Users\User.cs" />
   </ItemGroup>
 </Project>

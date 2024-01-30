@@ -1,8 +1,9 @@
 ﻿using System;
 
-namespace CN.Models.Centrals;
+namespace CN.Models.Servers;
 
-public class Central
+public class Server
+
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

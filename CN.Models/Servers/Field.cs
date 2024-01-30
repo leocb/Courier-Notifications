@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace CN.Models.Centrals;
+namespace CN.Models.Servers;
 
 public class Field
 {
