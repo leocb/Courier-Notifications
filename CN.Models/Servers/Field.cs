@@ -5,11 +5,13 @@ namespace CN.Models.Servers;
 public class Field
 {
     public string Name { get; set; } = string.Empty;
-    public int Size { get; set; }
+    public string Value { get; set; } = string.Empty;
     public bool Required { get; set; }
-    public bool OnlyNumbers { get; set; }
-    public Regex? SecondaryAnswear { get; set; }
+    public Regex Validation { get; set; } = new(@"^.*$", RegexOptions.Compiled);
+    public bool IsValid => Validation.IsMatch(Value);
+    public Regex RegexForAlternate { get; set; } = new(@"empty", RegexOptions.Compiled);
     public string? TextBeforeValue { get; set; }
     public string? TextAfterValue { get; set; }
-    public string? TextAfterValueSecondary { get; set; }
+    public string? TextBeforeValueAlternate { get; set; }
+    public string? TextAfterValueAlternate { get; set; }
 }
