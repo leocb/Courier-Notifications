@@ -10,20 +10,20 @@ namespace CN.Desktop.Display.Providers;
 
 public static class MessageDisplayManager
 {
-    public static ObservableCollection<MessageViewmodel> Messages { get; set; } = new ObservableCollection<MessageViewmodel>();
-    private static BlockingCollection<MessageViewmodel> DisplayMessages { get; set; } = new BlockingCollection<MessageViewmodel>();
+    public static ObservableCollection<MessageViewmodel> Messages { get; set; } = [];
+    private static BlockingCollection<MessageViewmodel> DisplayMessages { get; set; } = [];
 
     private static Window? currentDisplay;
 
     static MessageDisplayManager()
     {
-        Thread displayTask = new(MessageQueueDisplayThread());
+        Thread displayTask = new(new ThreadStart(MessageQueueDisplayThread));
         displayTask.SetApartmentState(ApartmentState.STA);
         displayTask.IsBackground = true;
         displayTask.Start();
     }
 
-    private static ThreadStart MessageQueueDisplayThread()
+    private static void MessageQueueDisplayThread()
     {
         while (true)
         {
@@ -34,6 +34,7 @@ public static class MessageDisplayManager
             message.Status = MessageStatus.BeingDisplayed;
 
             currentDisplay = new Views.Display(message.Text);
+            // this will block until the current display window is closed
             bool? completed = currentDisplay.ShowDialog();
             currentDisplay = null;
 

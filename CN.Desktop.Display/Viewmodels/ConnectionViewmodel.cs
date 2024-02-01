@@ -9,7 +9,7 @@ namespace CN.Desktop.Display.Viewmodels;
 
 public class ConnectionViewmodel : INotifyPropertyChanged
 {
-    private Models.ConnectionStatus status;
+    private ConnectionStatus status;
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged(string? propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -29,7 +29,7 @@ public class ConnectionViewmodel : INotifyPropertyChanged
         }
     }
 
-    public ICommand ConnectCommand => new CommandHandler(() => ConnectClickCmdHandler(), this.ConnectButtonEnabled);
+    public ICommand ConnectCommand => new CommandHandler(ConnectClickCmdHandler, this.ConnectButtonEnabled);
 
     private bool ConnectButtonEnabled => this.Status switch
     {
