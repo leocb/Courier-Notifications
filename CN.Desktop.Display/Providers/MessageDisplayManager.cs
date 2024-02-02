@@ -44,10 +44,10 @@ public static class MessageDisplayManager
 
     public static void AddDisplayMessage(Message message)
     {
-        MessageViewmodel msgVM = new(message)
-        {
-            Status = MessageStatus.Waiting
-        };
+        MessageViewmodel msgVM = new(message);
+
+        if (message.Status != MessageStatus.Info)
+            message.Status = MessageStatus.Waiting;
 
         Application.Current.Dispatcher.Invoke(delegate
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CN.Models.Servers;
+namespace CN.Models.Channels;
 
 public class Channel
 {

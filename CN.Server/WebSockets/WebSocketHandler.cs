@@ -3,40 +3,33 @@ using System.Text;
 using System.Text.Json;
 
 using CN.Models;
+using CN.Models.Channels;
+using CN.Models.Exceptions;
 using CN.Models.Messages;
-using CN.Server.Exceptions;
 
 namespace CN.Server.WebSockets;
 
 public class WebSocketHandler
 {
     public Guid ServerId { get; } = Guid.NewGuid();
-    public async Task OnConnect(WebSocket socket, Guid clientId)
+    public async Task OnConnect(WebSocket socket, Channel channel)
     {
-        ConnectionManager.Add(socket, clientId);
+        ConnectionManager.Add(socket, channel.Id ?? throw new CourierException("Invalid Channel"));
 
         Message message = new()
         {
             Date = DateTime.Now,
             From = this.ServerId,
             Status = MessageStatus.Info,
-            Text = "Connected"
+            Text = $"Connected to channel: {channel.Name}"
         };
         await SendMessageAsync(socket, message);
     }
 
     public async Task OnDisconnect(WebSocket socket)
     {
-        Message message = new()
-        {
-            Date = DateTime.Now,
-            From = this.ServerId,
-            Status = MessageStatus.Info,
-            Text = "Disconnected"
-        };
-        await SendMessageAsync(socket, message);
-
-        await ConnectionManager.RemoveAndDisconnect(ConnectionManager.GetId(socket));
+        Guid id = ConnectionManager.GetId(socket);
+        await ConnectionManager.RemoveAndDisconnect(id);
     }
 
     public async Task SendMessageAsync(Guid clientId, object message) =>

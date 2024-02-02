@@ -1,20 +1,21 @@
-﻿using CN.Models.Servers;
+﻿using CN.Models.Channels;
+using CN.Models.Exceptions;
+using CN.Models.Server;
 using CN.Server.Database;
-using CN.Server.Exceptions;
 
 namespace CN.Server.Providers;
 
 public class ChannelDataProvider
 {
     private readonly LiteDbContext context;
-    private readonly LiteDB.ILiteCollection<Channel?> channels;
-    private readonly LiteDB.ILiteCollection<OwnerData?> owners;
+    private readonly LiteDB.ILiteCollection<Channel?> channelsDb;
+    private readonly LiteDB.ILiteCollection<ChannelRoles?> channelRolesDb;
 
     public ChannelDataProvider(LiteDbContext context)
     {
         this.context = context;
-        this.channels = this.context.Database.GetCollection<Channel?>("Channels");
-        this.owners = this.context.Database.GetCollection<OwnerData?>("ChannelsOwner");
+        this.channelsDb = this.context.ChannelDatabase.GetCollection<Channel?>("Channels");
+        this.channelRolesDb = this.context.ChannelDatabase.GetCollection<ChannelRoles?>("ChannelRoles");
     }
 
     public async Task<Guid> CreateChannel(Guid ownerId, Channel data)
@@ -23,39 +24,40 @@ public class ChannelDataProvider
         {
             Guid newChannelId = Guid.NewGuid();
             data.Id = newChannelId;
-            OwnerData owner = new() { Owner = ownerId };
-            this.owners.Insert(newChannelId, owner);
-            this.channels.Insert(newChannelId, data);
+
+            ChannelRoles roles = new()
+            {
+                Owner = ownerId,
+                AllowedSenders = [new(ownerId, "Owner")]
+            };
+
+            this.channelRolesDb.Insert(newChannelId, roles);
+            this.channelsDb.Insert(newChannelId, data);
+
             return newChannelId;
 
         }).ConfigureAwait(false);
     }
 
-    public async Task UpdateChannel(Guid ownerId, Guid channelId, Channel data)
+    public async Task UpdateChannel(Guid channelId, Guid ownerId, Channel data)
     {
         await Task.Run(() =>
         {
-            OwnerData? owner = this.owners.FindById(channelId);
+            GetRoles(channelId).ValidateOwner(ownerId);
 
-            if (owner is null || owner.Owner != ownerId)
-                throw new CourierException("you know what you did.");
-
-            _ = this.channels.Update(channelId, data);
+            _ = this.channelsDb.Update(channelId, data);
 
         }).ConfigureAwait(false);
     }
 
-    public async Task DeleteChannel(Guid ownerId, Guid channelId)
+    public async Task DeleteChannel(Guid channelId, Guid ownerId)
     {
         await Task.Run(() =>
         {
-            OwnerData? owner = this.owners.FindById(channelId);
+            GetRoles(channelId).ValidateOwner(ownerId);
 
-            if (owner is null || owner.Owner != ownerId)
-                throw new CourierException("you know what you did.");
-
-            _ = this.owners.Delete(ownerId);
-            _ = this.channels.Delete(channelId);
+            _ = this.channelRolesDb.Delete(ownerId);
+            _ = this.channelsDb.Delete(channelId);
 
         }).ConfigureAwait(false);
     }
@@ -64,7 +66,7 @@ public class ChannelDataProvider
     {
         return await Task.Run(() =>
         {
-            Channel? channel = this.channels.FindById(channelId);
+            Channel? channel = this.channelsDb.FindById(channelId);
 
             if (channel is null)
                 throw new CourierException("channel not found.");
@@ -72,28 +74,83 @@ public class ChannelDataProvider
             return channel;
 
         }).ConfigureAwait(false);
-
     }
 
     public async Task<List<Channel>> GetChannelBulk(List<Guid> channelList)
     {
         return await Task.Run(() =>
         {
-            List<Channel> returnData = [];
+            List<Channel> channelData = [];
             foreach (Guid channelId in channelList)
             {
-                Channel? channel = this.channels.FindById(channelId);
-                if (channel is null)
-                {
-                    continue;
-                }
+                Channel? channel = this.channelsDb.FindById(channelId);
 
-                returnData.Add(channel);
+                if (channel is null)
+                    continue;
+
+                channelData.Add(channel);
             }
 
-            return returnData;
+            return channelData;
 
         }).ConfigureAwait(false);
 
+    }
+
+    public async Task<ChannelRoles> GetChannelRoles(Guid channelId, Guid ownerId)
+    {
+        return await Task.Run(() =>
+        {
+            ChannelRoles roles = GetRoles(channelId);
+            roles.ValidateOwner(ownerId);
+
+            return roles;
+        }).ConfigureAwait(false);
+    }
+
+    public async Task VerifyAllowedSender(Guid channelId, Guid senderId)
+    {
+        await Task.Run(() =>
+        {
+            GetRoles(channelId).ValidateAllowedSender(senderId);
+        }).ConfigureAwait(false);
+    }
+
+    public async Task<ChannelRoles> AddSenderToChannelRoles(Guid channelId, Guid ownerId, AllowedSender newSender)
+    {
+        return await Task.Run(() =>
+        {
+            ChannelRoles roles = GetRoles(channelId);
+            roles.ValidateOwner(ownerId);
+
+            roles.AllowedSenders.Add(newSender);
+            _ = this.channelRolesDb.Update(channelId, roles);
+
+            return roles;
+        }).ConfigureAwait(false);
+    }
+
+    public async Task<ChannelRoles> RemoveSenderFromChannelRoles(Guid channelId, Guid ownerId, Guid removedSenderId)
+    {
+        return await Task.Run(() =>
+        {
+            ChannelRoles roles = GetRoles(channelId);
+            roles.ValidateOwner(ownerId);
+
+            _ = roles.AllowedSenders.RemoveAll(x => x.Id == removedSenderId);
+            _ = this.channelRolesDb.Update(channelId, roles);
+
+            return roles;
+        }).ConfigureAwait(false);
+    }
+
+    private ChannelRoles GetRoles(Guid channelId)
+    {
+        ChannelRoles? roles = this.channelRolesDb.FindById(channelId);
+
+        if (roles is null)
+            throw new CourierException("channel not found");
+
+        return roles;
     }
 }

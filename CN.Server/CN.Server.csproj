@@ -21,10 +21,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Options\" />
-  </ItemGroup>
-
   <Import Project="..\CN.Models\CN.Models.projitems" Label="Shared" />
 
 </Project>

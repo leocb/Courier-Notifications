@@ -9,15 +9,14 @@
     <Import_RootNamespace>CN.Models</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\CourierException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Option.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)servers\Role.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Servers\OwnerData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Servers\Field.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Servers\Channel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Channels\Field.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Channels\Channel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectionStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\Message.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\MessageStatus.cs" />
-    <Compile Include="..\CN.Models\users\Permission.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Users\User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Sender.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\ChannelRoles.cs" />
   </ItemGroup>
 </Project>

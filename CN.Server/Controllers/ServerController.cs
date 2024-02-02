@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace CN.Server.Controllers;
-[Route("api/[controller]")]
+[Route("api/server")]
 [ApiController]
 public class ServerController(WebSocketHandler wsHandler) : ControllerBase
 {

@@ -1,14 +1,16 @@
 ﻿using System.Net.WebSockets;
 
+using CN.Models.Channels;
+using CN.Server.Providers;
 using CN.Server.WebSockets;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace CN.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/ws")]
 [ApiController]
-public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
+public class WebSocketController(WebSocketHandler wsHandler, ChannelDataProvider channelProvider) : ControllerBase
 {
     [HttpGet("connect")]
     public async Task Get([FromQuery] Guid channelId)
@@ -22,7 +24,9 @@ public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
 
         using WebSocket ws = await wsManager.AcceptWebSocketAsync();
 
-        await wsHandler.OnConnect(ws, channelId);
+        Channel channel = await channelProvider.GetChannel(channelId);
+
+        await wsHandler.OnConnect(ws, channel);
 
         await WsLoop(ws);
     }

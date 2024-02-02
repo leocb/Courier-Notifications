@@ -1,13 +1,12 @@
-﻿using CN.Models.Servers;
+﻿using CN.Models.Channels;
 using CN.Server.Providers;
-using CN.Server.WebSockets;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace CN.Server.Controllers;
-[Route("api/[controller]")]
+[Route("api/channel")]
 [ApiController]
-public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider channelProvider) : ControllerBase
+public class ChannelController(ChannelDataProvider channelProvider) : ControllerBase
 {
 
     [HttpPost()]
@@ -27,7 +26,7 @@ public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider c
         [FromBody] Channel channelData
     )
     {
-        await channelProvider.UpdateChannel(ownerId, channelId, channelData);
+        await channelProvider.UpdateChannel(channelId, ownerId, channelData);
         return Ok();
     }
 
@@ -37,7 +36,7 @@ public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider c
         [FromQuery] Guid channelId
     )
     {
-        await channelProvider.DeleteChannel(ownerId, channelId);
+        await channelProvider.DeleteChannel(channelId, ownerId);
         return Ok();
     }
 

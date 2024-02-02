@@ -1,6 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
-namespace CN.Server.Exceptions;
+namespace CN.Models.Exceptions;
 
 [Serializable]
 public class CourierException : Exception

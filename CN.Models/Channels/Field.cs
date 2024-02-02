@@ -1,4 +1,4 @@
-﻿namespace CN.Models.Servers;
+﻿namespace CN.Models.Channels;
 
 public class Field
 {
