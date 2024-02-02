@@ -9,8 +9,9 @@
     <Import_RootNamespace>CN.Models</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Option.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)servers\Role.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Servers\Server.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Servers\OwnerData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Servers\Field.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Servers\Channel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectionStatus.cs" />

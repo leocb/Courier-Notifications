@@ -10,10 +10,8 @@ namespace CN.Server.Controllers;
 [ApiController]
 public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
 {
-    private WebSocketHandler WsHandler { get; set; } = wsHandler;
-
     [HttpGet("connect")]
-    public async Task Get([FromHeader]Guid clientId)
+    public async Task Get([FromQuery] Guid channelId)
     {
         WebSocketManager wsManager = this.HttpContext.WebSockets;
         if (!wsManager.IsWebSocketRequest)
@@ -24,7 +22,7 @@ public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
 
         using WebSocket ws = await wsManager.AcceptWebSocketAsync();
 
-        await this.WsHandler.OnConnect(ws, clientId);
+        await wsHandler.OnConnect(ws, channelId);
 
         await WsLoop(ws);
     }
@@ -39,7 +37,7 @@ public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
 
             if (result.MessageType == WebSocketMessageType.Close)
             {
-                await this.WsHandler.OnDisconnect(ws);
+                await wsHandler.OnDisconnect(ws);
                 break;
             }
 

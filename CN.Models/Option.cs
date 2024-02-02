@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CN.Server.Options;
+namespace CN.Models;
 
-public static class Option
+public static class Options
 {
     public static JsonSerializerOptions JsonSerializer { get; } = new JsonSerializerOptions()
     {

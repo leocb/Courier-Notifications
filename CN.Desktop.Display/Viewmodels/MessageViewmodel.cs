@@ -22,7 +22,7 @@ public class MessageViewmodel : INotifyPropertyChanged
 
     public string Text => this.Message.Text;
     public string DateTimeText => this.Message.Date.ToString("dd/MM/yyyy hh:mm:ss");
-    public string From => this.Message.FromName;
+    public Guid From => this.Message.From;
     public string Info => $"{this.DateTimeText} - {this.From}";
     public MessageStatus Status
     {
@@ -37,7 +37,7 @@ public class MessageViewmodel : INotifyPropertyChanged
         }
     }
 
-    public ICommand ClickCommand => new CommandHandler(() => ButtonClickCmdHandler(), this.ButtonEnabled);
+    public ICommand ClickCommand => new CommandHandler(ButtonClickCmdHandler, this.ButtonEnabled);
 
     public Brush Backcolor => this.Status switch
     {
@@ -73,7 +73,7 @@ public class MessageViewmodel : INotifyPropertyChanged
             case MessageStatus.OK: // Duplicate message
                 MessageDisplayManager.AddDisplayMessage(new Message()
                 {
-                    FromName = $"{this.Message.FromName} [Dup]",
+                    From = this.Message.From,
                     Text = this.Message.Text,
                     Date = DateTime.Now,
                 });

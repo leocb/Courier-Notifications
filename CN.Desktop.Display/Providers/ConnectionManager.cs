@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Threading;
-using System.Xml.Serialization;
 
 using CN.Desktop.Display.Viewmodels;
+using CN.Models.Messages;
+
+using Microsoft.Win32;
 
 using WebSocket4Net;
 
@@ -17,10 +19,24 @@ namespace CN.Desktop.Display.Providers;
 public static class ConnectionManager
 {
     public static ConnectionViewmodel Viewmodel { get; set; } = new ConnectionViewmodel();
-    private static readonly ObservableCollection<WebSocket> webSockets = new();
+    private static readonly ObservableCollection<WebSocket> webSockets = [];
+
+    private static readonly Guid DisplayId;
+    private static readonly string RegistryKeyPath = @"HKEY_CURRENT_USER\Software\Courier Notifications";
+    private static readonly string RegistryValueName = @"id";
 
     static ConnectionManager()
     {
+        if (Registry.GetValue(RegistryKeyPath, RegistryValueName, null) is Guid id)
+        {
+            DisplayId = id;
+        }
+        else
+        {
+            DisplayId = Guid.NewGuid();
+            Registry.SetValue(RegistryKeyPath, RegistryValueName, DisplayId);
+        }
+
         Viewmodel.Status = Models.ConnectionStatus.None;
     }
 
@@ -54,8 +70,8 @@ public static class ConnectionManager
         if (Channels.Length != webSockets.Where(ws => ws.State == WebSocketState.Open).ToArray().Length)
         {
             CloseAllChannels();
-            MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
-            { Text = $"Error: Some channels could not be connected.", Date = DateTime.Now, FromName = "Connection manager" });
+            MessageDisplayManager.AddInternalMessage(new Message()
+            { Text = $"Error: Some channels could not be connected.", Date = DateTime.Now, From = DisplayId });
             Viewmodel.Status = Models.ConnectionStatus.Error;
             return;
         }
@@ -103,8 +119,8 @@ public static class ConnectionManager
         }
         catch (Exception ex)
         {
-            MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
-            { Text = $"Error: {ex.Message}", Date = DateTime.Now, FromName = "Connection manager" });
+            MessageDisplayManager.AddInternalMessage(new Message()
+            { Text = $"Error: {ex.Message}", Date = DateTime.Now, From = DisplayId });
         }
     }
     private static void Close(WebSocket ws)
@@ -117,34 +133,6 @@ public static class ConnectionManager
         }
     }
 
-    public static void SendMessageToAllChannels(string message, string fromName)
-    {
-        Models.Messages.Message messageModel = new()
-        { FromName = fromName, Date = DateTime.Now, Text = message };
-
-        XmlSerializer xml = new(typeof(Models.Messages.Message));
-        string xmlText;
-
-        using (StringWriter sw = new())
-        {
-            xml.Serialize(sw, messageModel);
-            xmlText = sw.ToString();
-        }
-
-        foreach (WebSocket ws in webSockets)
-        {
-            ws.Send(xmlText);
-        }
-    }
-
-    public static void SendInternalMessage(string message)
-    {
-        foreach (WebSocket ws in webSockets)
-        {
-            ws.Send(message);
-        }
-    }
-
     public static string CreateRandomChannelID() => Guid.NewGuid().ToString();
 
     private static void OnWsMessage(object? sender, MessageReceivedEventArgs e)
@@ -153,27 +141,21 @@ public static class ConnectionManager
             return;
 
         // Internal server message
-        if (!e.Message.Contains("xml"))
-        {
-            MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
-            { Text = e.Message, Date = DateTime.Now, FromName = "Websocket Server" },
-            e.Message.ToUpper().Contains("ERROR") ? Models.Messages.MessageStatus.Failed : Models.Messages.MessageStatus.Info);
-            return;
-        }
-
-        // xml means a properly formatted message, show on screen
         try
         {
-            XmlSerializer xml = new(typeof(Models.Messages.Message));
+            Message? message = JsonSerializer.Deserialize<Message>(e.Message, Models.Options.JsonSerializer);
+            if (message is null)
+            {
+                throw new Exception("Failed to parse");
+            }
 
-            using TextReader sr = new StringReader(e.Message);
-            MessageDisplayManager.AddDisplayMessage((Models.Messages.Message)xml.Deserialize(sr));
-
+            MessageDisplayManager.AddDisplayMessage(message);
         }
         catch (Exception ex)
         {
-            MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
-            { Text = $"Error: {ex.Message}\nValue: {e.Message}", Date = DateTime.Now, FromName = "Message Error" });
+            MessageDisplayManager.AddInternalMessage(new Message()
+            { Text = $"Error: {ex.Message}\nOriginal: {e.Message}", Date = DateTime.Now, From = DisplayId },
+            MessageStatus.Failed);
         }
     }
 
@@ -185,9 +167,9 @@ public static class ConnectionManager
         PropertyInfo itemProperty = typeof(WebSocket).GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Single(pi => pi.Name == "TargetUri");
         Uri? wsTarget = itemProperty.GetValue(sender, null) as Uri;
 
-        MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
-        { Text = $"Connected to {wsTarget?.ToString()}", Date = DateTime.Now, FromName = "Websocket" },
-        Models.Messages.MessageStatus.Info);
+        MessageDisplayManager.AddInternalMessage(new Message()
+        { Text = $"Connected to {wsTarget?.ToString()}", Date = DateTime.Now, From = DisplayId },
+        MessageStatus.Info);
     }
 
     private static void OnWsClose(object? sender, EventArgs e)
@@ -198,12 +180,12 @@ public static class ConnectionManager
         PropertyInfo itemProperty = typeof(WebSocket).GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Single(pi => pi.Name == "TargetUri");
         Uri? wsTarget = itemProperty.GetValue(sender, null) as Uri;
 
-        MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
-        { Text = $"Disconnected from {wsTarget?.ToString()}", Date = DateTime.Now, FromName = "Websocket" },
-        Models.Messages.MessageStatus.Info);
+        MessageDisplayManager.AddInternalMessage(new Message()
+        { Text = $"Disconnected from {wsTarget?.ToString()}", Date = DateTime.Now, From = DisplayId },
+        MessageStatus.Info);
     }
 
-    private static void OnWsError(object? sender, SuperSocket.ClientEngine.ErrorEventArgs e) => MessageDisplayManager.AddInternalMessage(new Models.Messages.Message()
-    { Text = $"Error: {e.Exception.Message}", Date = DateTime.Now, FromName = "Websocket" });
+    private static void OnWsError(object? sender, SuperSocket.ClientEngine.ErrorEventArgs e) => MessageDisplayManager.AddInternalMessage(new Message()
+    { Text = $"Error: {e.Exception.Message}", Date = DateTime.Now, From = DisplayId });
 
 }

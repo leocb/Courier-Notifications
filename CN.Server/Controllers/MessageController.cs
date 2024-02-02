@@ -8,15 +8,13 @@ namespace CN.Server.Controllers;
 [ApiController]
 public class MessageController(WebSocketHandler wsHandler) : ControllerBase
 {
-    private WebSocketHandler WsHandler { get; set; } = wsHandler;
-
     [HttpPost("send")]
     public async Task<ActionResult> SendMessage(
         [FromQuery] Guid channel,
         [FromBody] Message message
         )
     {
-        await WsHandler.SendMessageAsync(channel, message);
+        await wsHandler.SendMessageAsync(channel, message);
         return Ok();
     }
 }

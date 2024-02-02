@@ -2,9 +2,9 @@
 using System.Text;
 using System.Text.Json;
 
+using CN.Models;
 using CN.Models.Messages;
 using CN.Server.Exceptions;
-using CN.Server.Options;
 
 namespace CN.Server.WebSockets;
 
@@ -18,8 +18,7 @@ public class WebSocketHandler
         Message message = new()
         {
             Date = DateTime.Now,
-            FromKey = ServerId,
-            FromName = "Server",
+            From = this.ServerId,
             Status = MessageStatus.Info,
             Text = "Connected"
         };
@@ -31,8 +30,7 @@ public class WebSocketHandler
         Message message = new()
         {
             Date = DateTime.Now,
-            FromKey = ServerId,
-            FromName = "Server",
+            From = this.ServerId,
             Status = MessageStatus.Info,
             Text = "Disconnected"
         };
@@ -46,12 +44,12 @@ public class WebSocketHandler
     public async Task SendMessageAsync(WebSocket socket, object data)
     {
         if (socket is null)
-            throw new CourierException("channel not found");
+            throw new CourierException("channel not found or offline");
 
         if (socket.State != WebSocketState.Open)
             return;
 
-        string json = JsonSerializer.Serialize(data, Option.JsonSerializer);
+        string json = JsonSerializer.Serialize(data, Options.JsonSerializer);
 
         ArraySegment<byte> buffer = new(Encoding.UTF8.GetBytes(json), 0, json.Length);
         await socket.SendAsync(buffer,

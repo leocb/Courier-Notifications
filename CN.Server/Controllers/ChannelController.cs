@@ -9,8 +9,6 @@ namespace CN.Server.Controllers;
 [ApiController]
 public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider channelProvider) : ControllerBase
 {
-    private WebSocketHandler WsHandler { get; set; } = wsHandler;
-    private ChannelDataProvider ChannelProvider { get; set; } = channelProvider;
 
     [HttpPost()]
     public async Task<ActionResult<Guid>> CreateChannel(
@@ -18,7 +16,7 @@ public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider c
         [FromBody] Channel channelData
     )
     {
-        Guid newChannelId = await this.ChannelProvider.CreateChannel(ownerId, channelData);
+        Guid newChannelId = await channelProvider.CreateChannel(ownerId, channelData);
         return Ok(newChannelId);
     }
 
@@ -29,7 +27,7 @@ public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider c
         [FromBody] Channel channelData
     )
     {
-        await this.ChannelProvider.UpdateChannel(ownerId, channelId, channelData);
+        await channelProvider.UpdateChannel(ownerId, channelId, channelData);
         return Ok();
     }
 
@@ -39,7 +37,7 @@ public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider c
         [FromQuery] Guid channelId
     )
     {
-        await this.ChannelProvider.DeleteChannel(ownerId, channelId);
+        await channelProvider.DeleteChannel(ownerId, channelId);
         return Ok();
     }
 
@@ -48,7 +46,7 @@ public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider c
         [FromQuery] Guid channelId
     )
     {
-        Channel channelData = await this.ChannelProvider.GetChannel(channelId);
+        Channel channelData = await channelProvider.GetChannel(channelId);
         return Ok(channelData);
     }
 
@@ -57,7 +55,7 @@ public class ChannelController(WebSocketHandler wsHandler, ChannelDataProvider c
         [FromBody] List<Guid> channelIdList
     )
     {
-        List<Channel> channelDataList = await this.ChannelProvider.GetChannelBulk(channelIdList);
+        List<Channel> channelDataList = await channelProvider.GetChannelBulk(channelIdList);
         return Ok(channelDataList);
     }
 }
