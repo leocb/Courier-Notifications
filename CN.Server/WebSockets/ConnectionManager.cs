@@ -11,7 +11,7 @@ public static class ConnectionManager
 
     public static Guid GetId(WebSocket socket) => Sockets.FirstOrDefault(p => p.Value == socket).Key;
 
-    public static void Add(WebSocket socket) => Sockets.TryAdd(Guid.NewGuid(), socket);
+    public static void Add(WebSocket socket, Guid clientId) => Sockets.TryAdd(clientId, socket);
 
     public static async Task RemoveAndDisconnect(Guid id)
     {

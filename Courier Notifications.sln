@@ -7,7 +7,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CN.Models", "CN.Models\CN.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Desktop.Display", "CN.Desktop.Display\CN.Desktop.Display.csproj", "{E02199C6-615E-4C61-971E-A839155AED8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN.Server", "CN.Server\CN.Server.csproj", "{C2484476-50DD-4345-9236-7CBA09810872}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Server", "CN.Server\CN.Server.csproj", "{C2484476-50DD-4345-9236-7CBA09810872}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +32,7 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		CN.Models\CN.Models.projitems*{93389f29-b538-4017-a40d-4286a0253370}*SharedItemsImports = 13
+		CN.Models\CN.Models.projitems*{c2484476-50dd-4345-9236-7cba09810872}*SharedItemsImports = 5
 		CN.Models\CN.Models.projitems*{e02199c6-615e-4c61-971e-a839155aed8e}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

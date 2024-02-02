@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CN.Server.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
 {
     private WebSocketHandler WsHandler { get; set; } = wsHandler;
 
-    [HttpGet("/ws")]
-    public async Task Get()
+    [HttpGet("connect")]
+    public async Task Get([FromHeader]Guid clientId)
     {
         WebSocketManager wsManager = this.HttpContext.WebSockets;
         if (!wsManager.IsWebSocketRequest)
@@ -22,7 +24,7 @@ public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
 
         using WebSocket ws = await wsManager.AcceptWebSocketAsync();
 
-        await this.WsHandler.OnConnect(ws);
+        await this.WsHandler.OnConnect(ws, clientId);
 
         await WsLoop(ws);
     }
@@ -41,7 +43,8 @@ public class WebSocketController(WebSocketHandler wsHandler) : ControllerBase
                 break;
             }
 
-            await this.WsHandler.ReceiveAsync(ws, result, buffer);
+            // for now, ignore anything we receive on ws from clients
+            // await this.WsHandler.ReceiveAsync(ws, result, buffer);
         }
     }
 }

@@ -1,12 +1,23 @@
+using System.Text.Json.Serialization;
+
+using CN.Server.Options;
 using CN.Server.WebSockets;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = Option.JsonSerializer.PropertyNamingPolicy;
+    foreach (JsonConverter item in Option.JsonSerializer.Converters)
+    {
+        options.JsonSerializerOptions.Converters.Add(item);
+    }
+});
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSingleton(new WebSocketHandler());
+builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<WebSocketHandler>();
 
 WebApplication app = builder.Build();
 
@@ -20,7 +31,8 @@ app.UseWebSockets(webSocketOptions);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // nothing for now
+    _ = app.UseSwagger();
+    _ = app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
