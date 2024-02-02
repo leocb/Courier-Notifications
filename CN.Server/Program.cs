@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 using CN.Server.Options;
+using CN.Server.Providers;
 using CN.Server.WebSockets;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<WebSocketHandler>();
+builder.Services.AddSingleton<ChannelDataProvider>();
 
 WebApplication app = builder.Build();
 
