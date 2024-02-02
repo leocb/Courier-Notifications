@@ -1,13 +1,31 @@
-Server:
-Realtime, memory only, no DB
-Notification codes should be static. save in a file? (yes)
+## Server Info
 
-Windows/Android:
-App don't require login, just type the notification center code, notification senders type a password to be allowed in
-people monitoring the notification center can add a text to be notified about (regex)
-No custom notification centers for now, I'll add that later
-English and Portuguese UI (portuguese is the priority)
+- Realtime (websockets)
+- LiteDB
+- API:
+  - Channel CRUD
+  - Send Message
+  - Get Server ID
 
-Windows:
-WPF
-Display server for showing notifications on another screen.
+## Web app
+
+### Tech
+- Vue
+- App don't require login, all access info is saved on local storage
+- English and Portuguese UI (portuguese is the priority)
+
+### Send a message
+- user must scan a QR code on the display server, that includes: Channel ID, Auth ID (from field on messages).
+- this info will be saved locally on the display server, which will only allow messages coming from the Auth ID.
+- App queries channel api to get channel info
+- UI enables user to send messages following the template on that channel
+
+### Message monitoring
+- Scan QR Code with channel ID (no auth) - channel is added to list
+- People monitoring the notification center can add a text to be notified about (regex)
+
+## Display Server (Windows only):
+- WPF Display server for showing notifications on another screen.
+- Save Channel info locally - sync from server on startup
+- Allow Channel CRUD
+- Create/Save authorized devices to send messages on channel
