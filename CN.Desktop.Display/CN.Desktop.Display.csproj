@@ -23,8 +23,15 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
+    <PropertyGroup>
+	    <IncludeMaterialDesignFont>True</IncludeMaterialDesignFont>
+	    <MaterialDesignFontDirectory>Resources\Roboto\</MaterialDesignFontDirectory>
+    </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="WebSocket4Net" Version="0.15.2" />
     <PackageReference Include="WpfScreenHelper" Version="2.1.0" />
   </ItemGroup>

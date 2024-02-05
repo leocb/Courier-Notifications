@@ -1,6 +1,11 @@
 ﻿using System.Windows;
+using System.Windows.Media;
 
 using CN.Desktop.Display.Providers;
+
+using MaterialDesignColors;
+
+using MaterialDesignThemes.Wpf;
 
 namespace CN.Desktop.Display.Views;
 
@@ -12,6 +17,13 @@ public partial class Main : Window
     public Main()
     {
         InitializeComponent();
+        PaletteHelper paletteHelper = new();
+        ITheme theme = paletteHelper.GetTheme();
+
+        theme.SetBaseTheme(Theme.Dark);
+        theme.SetPrimaryColor(SwatchHelper.Lookup[MaterialDesignColor.Grey100]);
+        theme.SetSecondaryColor(SwatchHelper.Lookup[MaterialDesignColor.Blue600]);
+        paletteHelper.SetTheme(theme);
     }
 
     private void ConfigBtn_Click(object sender, RoutedEventArgs e)

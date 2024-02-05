@@ -8,6 +8,16 @@
         xmlns:vm="clr-namespace:CN.Desktop.Display.Viewmodels"
         xmlns:pv="clr-namespace:CN.Desktop.Display.Providers"
         mc:Ignorable="d"
+        
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        
         Title="Courier Notifications Display Server" Height="450" Width="800" ContentRendered="Window_ContentRendered"
         >
     <Window.Resources>
