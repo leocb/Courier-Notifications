@@ -23,7 +23,7 @@ public partial class Main : Window
 
     private void ConfigBtn_Click(object sender, RoutedEventArgs e)
     {
-        Settings config = new();
+        MessageSettings config = new();
         _ = config.ShowDialog();
     }
 

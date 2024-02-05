@@ -11,9 +11,9 @@ namespace CN.Desktop.Display.Views;
 /// <summary>
 /// Interaction logic for Settings.xaml
 /// </summary>
-public partial class Settings : Window
+public partial class MessageSettings : Window
 {
-    public Settings()
+    public MessageSettings()
     {
         InitializeComponent();
     }

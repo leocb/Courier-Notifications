@@ -9,9 +9,9 @@ namespace CN.Desktop.Display.Views;
 /// <summary>
 /// Interaction logic for Display.xaml
 /// </summary>
-public partial class Display : Window
+public partial class MessageDisplay : Window
 {
-    public Display(string Text)
+    public MessageDisplay(string Text)
     {
         InitializeComponent();
 
@@ -27,13 +27,14 @@ public partial class Display : Window
 
     private void Window_ContentRendered(object sender, System.EventArgs e)
     {
-        if (FindResource("TextAnimation") is not Storyboard sb)
-            return;
+        if (FindResource("TextAnimation") is Storyboard sb)
+        {
+            if (!double.TryParse(Properties.Settings.Default.Speed, out double speed))
+                speed = 120;
 
-        if (!double.TryParse(Properties.Settings.Default.Speed, out double speed))
-            speed = 120;
-        sb.SpeedRatio = 1 / ((this.MessageText.ActualWidth + this.MainGrid.Width) / speed);
-        sb.Begin();
+            sb.SpeedRatio = 1 / ((this.MessageText.ActualWidth + this.MainGrid.Width) / speed);
+            sb.Begin();
+        }
     }
 
     private void Storyboard_Completed(object sender, System.EventArgs e)

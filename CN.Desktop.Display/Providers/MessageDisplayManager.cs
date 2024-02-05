@@ -33,7 +33,7 @@ public static class MessageDisplayManager
 
             message.Status = MessageStatus.BeingDisplayed;
 
-            currentDisplay = new Views.Display(message.Text);
+            currentDisplay = new Views.MessageDisplay(message.Text);
             // this will block until the current display window is closed
             bool? completed = currentDisplay.ShowDialog();
             currentDisplay = null;
