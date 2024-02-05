@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Input;
 
+using CN.Desktop.Display.Helpers;
+
 using WpfScreenHelper;
 
 namespace CN.Desktop.Display.Views;
