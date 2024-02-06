@@ -18,7 +18,6 @@ public partial class Main : Window
     public Main()
     {
         InitializeComponent();
-        ThemeHelper.SetTheme();
     }
 
     private void ConfigBtn_Click(object sender, RoutedEventArgs e)
