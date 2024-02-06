@@ -27,7 +27,62 @@
 
   <Window.Resources>
     <DataTemplate x:Key="ChannelRow">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="auto" />
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
 
+        <StackPanel Margin="10"
+                    Orientation="Horizontal">
+          <Button Style="{StaticResource MaterialDesignToolButton}"
+                  ToolTip="Usuarios">
+            <materialDesign:PackIcon Kind="User" />
+          </Button>
+          <Button Style="{StaticResource MaterialDesignToolButton}"
+                  ToolTip="Editar">
+            <materialDesign:PackIcon Kind="Edit" />
+          </Button>
+          <Button Style="{StaticResource MaterialDesignToolButton}"
+                  ToolTip="Excluir">
+            <materialDesign:PackIcon Kind="Delete" />
+          </Button>
+        </StackPanel>
+
+        <TextBlock Text="ComuKids: Chamar responsavel"
+                   TextTrimming="CharacterEllipsis"
+                   Margin="0"
+                   Grid.Column="1"
+                   VerticalAlignment="Center"
+                   Style="{StaticResource MaterialDesignBody1TextBlock}" />
+
+        <StackPanel Margin="10,0"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+          <TextBlock Margin="0,0,5,0"
+                     Text="a5d9ecb2-9c7a-435a-8e97-c7f88d2430d8"
+                     Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
+          <StackPanel Orientation="Horizontal">
+            <Button Style="{StaticResource MaterialDesignToolButton}">
+              <materialDesign:PackIcon Kind="Check"
+                                       ToolTip="Conectado" />
+            </Button>
+          </StackPanel>
+        </StackPanel>
+
+        <Rectangle Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Margin="10,0"
+                   Height="1"
+                   HorizontalAlignment="Stretch"
+                   Fill="{DynamicResource MaterialDesignDivider}" />
+      </Grid>
     </DataTemplate>
   </Window.Resources>
 
@@ -83,64 +138,9 @@
                              UniformCornerRadius="10"
                              materialDesign:ElevationAssist.Elevation="Dp3">
           <StackPanel>
-            <!--<TextBlock Margin="20"
-                       Text="Crie um canal usando o botão acima" />-->
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-              </Grid.RowDefinitions>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="auto" />
-              </Grid.ColumnDefinitions>
+            <TextBlock Margin="20"
+                       Text="Crie um canal usando o botão acima" />
 
-              <StackPanel Margin="10"
-                          Orientation="Horizontal">
-                <Button Style="{StaticResource MaterialDesignToolButton}"
-                        ToolTip="Usuarios">
-                  <materialDesign:PackIcon Kind="User" />
-                </Button>
-                <Button Style="{StaticResource MaterialDesignToolButton}"
-                        ToolTip="Editar">
-                  <materialDesign:PackIcon Kind="Edit" />
-                </Button>
-                <Button Style="{StaticResource MaterialDesignToolButton}"
-                        ToolTip="Excluir">
-                  <materialDesign:PackIcon Kind="Delete" />
-                </Button>
-              </StackPanel>
-
-              <TextBlock Text="ComuKids: Chamar responsavel"
-                         TextTrimming="CharacterEllipsis"
-                         Margin="0"
-                         Grid.Column="1"
-                         VerticalAlignment="Center"
-                         Style="{StaticResource MaterialDesignBody1TextBlock}" />
-
-              <StackPanel Margin="10,0"
-                          Grid.Column="2"
-                          VerticalAlignment="Center"
-                          Orientation="Horizontal">
-                <TextBlock Margin="0,0,5,0"
-                           Text="a5d9ecb2-9c7a-435a-8e97-c7f88d2430d8"
-                           Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
-                <StackPanel Orientation="Horizontal">
-                  <Button Style="{StaticResource MaterialDesignToolButton}">
-                    <materialDesign:PackIcon Kind="Check"
-                                             ToolTip="Conectado" />
-                  </Button>
-                </StackPanel>
-              </StackPanel>
-
-              <Rectangle Grid.Row="1"
-                         Grid.ColumnSpan="3"
-                         Margin="10,0"
-                         Height="1"
-                         HorizontalAlignment="Stretch"
-                         Fill="{DynamicResource MaterialDesignDivider}" />
-            </Grid>
           </StackPanel>
         </materialDesign:Card>
       </StackPanel>
