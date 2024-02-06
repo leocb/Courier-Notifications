@@ -8,7 +8,6 @@
         xmlns:vm="clr-namespace:CN.Desktop.Display.Viewmodels"
         xmlns:pv="clr-namespace:CN.Desktop.Display.Providers"
         mc:Ignorable="d"
-        
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -17,55 +16,114 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        
-        Title="Courier Notifications Display Server" Height="450" Width="800" ContentRendered="Window_ContentRendered"
-        >
-    <Window.Resources>
-        <DataTemplate x:Key="messageTemplate">
-                <Grid Background="{Binding Backcolor}" UseLayoutRounding="True" Margin="0,1,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-
-                    <Button Content="{Binding ButtonText}" Command="{Binding ClickCommand}"  Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Center" Width="75" Margin="5" Padding="10,5" VerticalAlignment="Stretch" FontSize="11" UseLayoutRounding="False" Background="{Binding Backcolor}"/>
-
-                <TextBlock Text="{Binding Info}" HorizontalAlignment="Left"  Margin="0,5,5,0" Grid.Column="1" FontSize="8" Foreground="#CC000000"/>
-
-                <TextBlock Text="{Binding Text}" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="0,0,5,5"/>
-                </Grid>
-        </DataTemplate>
-    </Window.Resources>
-    <Grid
-        RenderOptions.ClearTypeHint="Auto"
-        TextOptions.TextHintingMode="Fixed"
-        TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="ClearType">
-
+        Title="Courier Notifications Display Server"
+        Height="450"
+        Width="800"
+        ContentRendered="Window_ContentRendered">
+  <Window.Resources>
+    <DataTemplate x:Key="messageTemplate">
+      <Grid Background="{Binding Backcolor}"
+            UseLayoutRounding="True"
+            Margin="0,1,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="auto" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <Grid HorizontalAlignment="Stretch"  Background="{Binding Backcolor}" DataContext="{x:Static pv:ConnectionManager.Viewmodel}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
+        <Button Content="{Binding ButtonText}"
+                Command="{Binding ClickCommand}"
+                Grid.Column="0"
+                Grid.RowSpan="2"
+                HorizontalAlignment="Center"
+                Width="75"
+                Margin="5"
+                Padding="10,5"
+                VerticalAlignment="Stretch"
+                FontSize="11"
+                UseLayoutRounding="False"
+                Background="{Binding Backcolor}" />
 
-            <Button Grid.Column="0" x:Name="ConfigBtn" Content="Configurações" Padding="10,3" Margin="5" HorizontalAlignment="Left" FontSize="10" Click="ConfigBtn_Click"/>
-            <TextBox Grid.Column="1" Text="{Binding ServerUrl, Source={x:Static properties:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="{Binding ServerConfigEnabled}" HorizontalAlignment="Stretch" Margin="5" ToolTip="URL do Servidor"/>
-            <TextBox Grid.Column="2" Text="{Binding ServerChannels, Source={x:Static properties:Settings.Default}, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="{Binding ServerConfigEnabled}" HorizontalAlignment="Stretch" Margin="5" ToolTip="Canal (É possivel configurar varios canais usando ',' como separador)"/>
-            <Button Grid.Column="3" Content="{Binding ConnectButtonText}" Command="{Binding ConnectCommand}" Padding="10,3" Margin="5" HorizontalAlignment="Right" FontSize="10"/>
-        </Grid>
-        <ScrollViewer Grid.Row="1"  UseLayoutRounding="True" > 
-            <ItemsControl ItemsSource="{Binding Source={x:Static pv:MessageDisplayManager.Messages}}" ItemTemplate="{StaticResource messageTemplate}"/>
-        </ScrollViewer>
-    </Grid>
+        <TextBlock Text="{Binding Info}"
+                   HorizontalAlignment="Left"
+                   Margin="0,5,5,0"
+                   Grid.Column="1"
+                   FontSize="8"
+                   Foreground="#CC000000" />
+
+        <TextBlock Text="{Binding Text}"
+                   Grid.Column="1"
+                   Grid.Row="1"
+                   TextWrapping="Wrap"
+                   Margin="0,0,5,5" />
+      </Grid>
+    </DataTemplate>
+  </Window.Resources>
+  <Grid ClipToBounds="False">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="1*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="1*" />
+    </Grid.ColumnDefinitions>
+
+    <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp6"
+                              Mode="PrimaryMid">
+
+      <Grid Margin="10">
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+          <TextBlock Margin="20,0,0,0"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Left"
+                     Text="Recados"
+                     Style="{StaticResource MaterialDesignHeadline4TextBlock}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+          <TextBlock Margin="0"
+                     Text="Tudo OK"
+                     VerticalAlignment="Center"
+                     Style="{StaticResource MaterialDesignBody1TextBlock}" />
+          <Button Margin="10,0,10,0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center"
+                  Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
+            <materialDesign:PackIcon Kind="Check" />
+          </Button>
+          <materialDesign:PopupBox IsEnabled="True"
+                                   PlacementMode="BottomAndAlignRightEdges">
+            <StackPanel>
+              <Button Content="Configurar" />
+              <Button Content="Canais" />
+            </StackPanel>
+          </materialDesign:PopupBox>
+        </StackPanel>
+      </Grid>
+    </materialDesign:ColorZone>
+
+    <ScrollViewer Grid.Row="1"
+                  VerticalAlignment="Stretch"
+                  VerticalScrollBarVisibility="Auto">
+      <StackPanel>
+        <materialDesign:Card Margin="10"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Top"
+                             UniformCornerRadius="10"
+                             materialDesign:ElevationAssist.Elevation="Dp3">
+          <StackPanel>
+            <ItemsControl ItemsSource="{Binding Source={x:Static pv:MessageDisplayManager.Messages}}"
+                          ItemTemplate="{StaticResource messageTemplate}" />
+          </StackPanel>
+        </materialDesign:Card>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
 </Window>
