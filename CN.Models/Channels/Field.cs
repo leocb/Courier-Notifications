@@ -4,9 +4,9 @@ public class Field
 {
     public string Name { get; set; } = "";
     public string Value { get; set; } = "";
-    public bool Required { get; set; } = false;
-    public string RegexValidation { get; set; } = @"^.*$";
-    public string RegexForAlternate { get; set; } = @"empty";
+    public bool IsNumeric { get; set; } = false;
+    public string RegexValidation { get; set; } = "";
+    public string RegexForAlternate { get; set; } = "";
     public string TextBeforeValue { get; set; } = "";
     public string TextAfterValue { get; set; } = "";
     public string TextBeforeValueAlternate { get; set; } = "";
