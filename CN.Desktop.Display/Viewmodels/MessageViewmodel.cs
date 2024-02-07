@@ -6,6 +6,8 @@ using System.Windows.Media;
 using CN.Desktop.Display.Providers;
 using CN.Models.Messages;
 
+using MaterialDesignThemes.Wpf;
+
 namespace CN.Desktop.Display.Viewmodels;
 
 public class MessageViewmodel : INotifyPropertyChanged
@@ -20,10 +22,37 @@ public class MessageViewmodel : INotifyPropertyChanged
         this.Message = message;
     }
 
-    public string Text => this.Message.Text;
-    public string DateTimeText => this.Message.Date.ToString("dd/MM/yyyy hh:mm:ss");
     public Guid From => this.Message.From;
-    public string Info => $"{this.DateTimeText} - {this.From}";
+
+    public string Text => this.Message.Text;
+
+    public string StatusText => this.Status switch
+    {
+        MessageStatus.None or MessageStatus.Waiting => "NA FILA",
+        MessageStatus.BeingDisplayed => "EM EXIBIÇÃO",
+        MessageStatus.Canceled => "CANCELADO",
+        MessageStatus.OK => "OK",
+        MessageStatus.Info => "INFORMAÇÃO",
+        _ => "ERRO",
+    };
+    public string DateTimeText => this.Message.Date.ToString("HH:mm");
+    public string FromName => "";
+    public string ChannelName => "";
+
+    public PackIconKind Icon => this.Status switch
+    {
+        MessageStatus.Waiting => PackIconKind.NewBox,
+        MessageStatus.BeingDisplayed => PackIconKind.ArrowUpBoldCircle,
+        MessageStatus.Canceled => PackIconKind.CloseOctagon,
+        MessageStatus.Info => PackIconKind.InformationVariant,
+        MessageStatus.Failed => PackIconKind.Fire,
+        MessageStatus.OK => PackIconKind.Check,
+        MessageStatus.None => PackIconKind.Help,
+        _ => PackIconKind.Help
+    };
+
+    public string Info => $"{this.StatusText}  •  {this.DateTimeText}  •  {this.ChannelName}  •  {this.FromName}";
+
     public MessageStatus Status
     {
         get => this.Message.Status;
@@ -31,13 +60,12 @@ public class MessageViewmodel : INotifyPropertyChanged
         {
             this.Message.Status = value;
             NotifyPropertyChanged(nameof(this.Status));
-            NotifyPropertyChanged(nameof(this.ButtonText));
-            NotifyPropertyChanged(nameof(this.ButtonEnabled));
+            NotifyPropertyChanged(nameof(this.Info));
             NotifyPropertyChanged(nameof(this.Backcolor));
         }
     }
 
-    public ICommand ClickCommand => new CommandHandler(ButtonClickCmdHandler, this.ButtonEnabled);
+    public ICommand ClickCommand => new CommandHandler(ButtonClickCmdHandler, true);
 
     public Brush Backcolor => this.Status switch
     {
@@ -48,12 +76,6 @@ public class MessageViewmodel : INotifyPropertyChanged
         MessageStatus.Info => new SolidColorBrush(Color.FromArgb(255, 247, 247, 247)),
         MessageStatus.OK => new SolidColorBrush(Color.FromArgb(255, 128, 207, 171)),
         _ => new SolidColorBrush(Color.FromArgb(255, 255, 131, 96)),
-    };
-
-    private bool ButtonEnabled => this.Status switch
-    {
-        MessageStatus.None or MessageStatus.Waiting or MessageStatus.BeingDisplayed or MessageStatus.Canceled or MessageStatus.OK => true,
-        _ => false,
     };
 
     public void ButtonClickCmdHandler()
@@ -82,14 +104,4 @@ public class MessageViewmodel : INotifyPropertyChanged
                 return;
         }
     }
-
-    public string ButtonText => this.Status switch
-    {
-        MessageStatus.None or MessageStatus.Waiting => "Na fila",
-        MessageStatus.BeingDisplayed => "Cancelar",
-        MessageStatus.Canceled => "Mostrar",
-        MessageStatus.OK => "Duplicar",
-        MessageStatus.Info => "Info",
-        _ => ":(",
-    };
 }
