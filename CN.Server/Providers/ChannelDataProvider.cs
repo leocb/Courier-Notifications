@@ -1,6 +1,6 @@
 ﻿using CN.Models.Channels;
 using CN.Models.Exceptions;
-using CN.Models.Server;
+using CN.Models.Roles;
 using CN.Server.Database;
 
 namespace CN.Server.Providers;

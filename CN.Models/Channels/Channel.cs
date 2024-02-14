@@ -5,7 +5,7 @@ namespace CN.Models.Channels;
 
 public class Channel
 {
-    public Guid? Id { get; set; }
+    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public List<Field> Fields { get; set; } = [];

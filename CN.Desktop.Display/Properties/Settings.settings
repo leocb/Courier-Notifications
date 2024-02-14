@@ -27,13 +27,16 @@
       <Value Profile="(Default)">60</Value>
     </Setting>
     <Setting Name="Speed" Type="System.String" Scope="User">
-      <Value Profile="(Default)">120</Value>
+      <Value Profile="(Default)">1200</Value>
     </Setting>
     <Setting Name="ServerUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ws://localhost:9091/ws/</Value>
+      <Value Profile="(Default)">https://localhost:48853</Value>
     </Setting>
-    <Setting Name="ServerChannels" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="ServerChannels" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;9228a990-e18c-45ea-be69-b232eca46126&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

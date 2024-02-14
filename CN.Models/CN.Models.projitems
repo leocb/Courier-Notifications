@@ -16,7 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectionStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\Message.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\MessageStatus.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\Sender.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\ChannelRoles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Roles\Sender.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Roles\ChannelRoles.cs" />
   </ItemGroup>
 </Project>

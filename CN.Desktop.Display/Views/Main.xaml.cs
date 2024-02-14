@@ -1,12 +1,6 @@
 ﻿using System.Windows;
-using System.Windows.Media;
 
-using CN.Desktop.Display.Helpers;
-using CN.Desktop.Display.Providers;
-
-using MaterialDesignColors;
-
-using MaterialDesignThemes.Wpf;
+using CN.Desktop.Display.Viewmodels;
 
 namespace CN.Desktop.Display.Views;
 
@@ -15,9 +9,11 @@ namespace CN.Desktop.Display.Views;
 /// </summary>
 public partial class Main : Window
 {
+    private readonly MainViewmodel vm = new();
     public Main()
     {
         InitializeComponent();
+        this.DataContext = this.vm;
     }
 
     private void ConfigBtn_Click(object sender, RoutedEventArgs e)
@@ -26,5 +22,5 @@ public partial class Main : Window
         _ = config.ShowDialog();
     }
 
-    private void Window_ContentRendered(object sender, System.EventArgs e) => ConnectionManager.OpenAllChannels();
+    private async void Window_ContentRendered(object sender, System.EventArgs e) => await this.vm.ConnectToAll();
 }

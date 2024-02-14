@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 
 using QRCoder;
 
-namespace CN.Desktop.Display.Providers;
+namespace CN.Desktop.Display.Helpers;
 internal static class QrCode
 {
     /// <summary>

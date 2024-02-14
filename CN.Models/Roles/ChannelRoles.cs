@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using CN.Models.Exceptions;
 
-namespace CN.Models.Server;
+namespace CN.Models.Roles;
 
 public class ChannelRoles
 

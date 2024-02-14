@@ -1,7 +1,7 @@
 
 using System;
 
-namespace CN.Models.Server;
+namespace CN.Models.Roles;
 
 public class AllowedSender
 {

@@ -1,4 +1,4 @@
-﻿using CN.Models.Server;
+﻿using CN.Models.Roles;
 using CN.Server.Providers;
 
 using Microsoft.AspNetCore.Mvc;
@@ -9,34 +9,34 @@ namespace CN.Server.Controllers;
 public class ChannelRoleController(ChannelDataProvider channelProvider) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<ChannelRoles>> GetRoles(
+    public async Task<ActionResult<List<AllowedSender>>> GetRoles(
         [FromHeader] Guid ownerId,
         [FromQuery] Guid channelId
     )
     {
         ChannelRoles roles = await channelProvider.GetChannelRoles(channelId, ownerId);
-        return Ok(roles);
+        return Ok(roles.AllowedSenders);
     }
 
     [HttpPost("sender")]
-    public async Task<ActionResult<ChannelRoles>> AllowSender(
+    public async Task<ActionResult> AllowSender(
         [FromHeader] Guid ownerId,
         [FromQuery] Guid channelId,
         [FromBody] AllowedSender newSender
     )
     {
-        ChannelRoles updatedRoles = await channelProvider.AddSenderToChannelRoles(channelId, ownerId, newSender);
-        return Ok(updatedRoles);
+        _ = await channelProvider.AddSenderToChannelRoles(channelId, ownerId, newSender);
+        return Ok();
     }
 
     [HttpDelete("sender")]
-    public async Task<ActionResult<ChannelRoles>> RemoveSender(
+    public async Task<ActionResult> RemoveSender(
         [FromHeader] Guid ownerId,
         [FromQuery] Guid channelId,
-        [FromBody] Guid senderId
+        [FromQuery] Guid senderId
     )
     {
-        ChannelRoles updatedRoles = await channelProvider.RemoveSenderFromChannelRoles(channelId, ownerId, senderId);
-        return Ok(updatedRoles);
+        _ = await channelProvider.RemoveSenderFromChannelRoles(channelId, ownerId, senderId);
+        return Ok();
     }
 }

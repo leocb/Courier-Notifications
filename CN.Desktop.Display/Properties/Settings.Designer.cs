@@ -12,7 +12,7 @@ namespace CN.Desktop.Display.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.3.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -121,7 +121,7 @@ namespace CN.Desktop.Display.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("120")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1200")]
         public string Speed {
             get {
                 return ((string)(this["Speed"]));
@@ -133,7 +133,7 @@ namespace CN.Desktop.Display.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ws://localhost:9091/ws/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:48853")]
         public string ServerUrl {
             get {
                 return ((string)(this["ServerUrl"]));
@@ -145,10 +145,12 @@ namespace CN.Desktop.Display.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ServerChannels {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>9228a990-e18c-45ea-be69-b232eca46126</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ServerChannels {
             get {
-                return ((string)(this["ServerChannels"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["ServerChannels"]));
             }
             set {
                 this["ServerChannels"] = value;

@@ -3,9 +3,9 @@
 public enum MessageStatus
 {
     None,
-    Failed,
+    Error,
     Info,
-    Waiting,
+    Queued,
     BeingDisplayed,
     Canceled,
     OK

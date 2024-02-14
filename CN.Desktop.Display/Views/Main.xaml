@@ -110,6 +110,8 @@
           <Button Margin="10,0,10,0"
                   HorizontalAlignment="Right"
                   VerticalAlignment="Center"
+                  IsEnabled="{Binding ConnectButtonEnabled}"
+                  Command="{Binding ConnectCommand}"
                   Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
             <materialDesign:PackIcon Kind="Check" />
           </Button>
@@ -134,7 +136,7 @@
                              UniformCornerRadius="10"
                              materialDesign:ElevationAssist.Elevation="Dp3">
           <StackPanel>
-            <ItemsControl ItemsSource="{Binding Source={x:Static pv:MessageDisplayManager.Messages}}"
+            <ItemsControl ItemsSource="{Binding Source={x:Static pv:MessageQueue.Messages}}"
                           ItemTemplate="{StaticResource messageTemplate}" />
           </StackPanel>
         </materialDesign:Card>

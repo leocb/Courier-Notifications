@@ -14,7 +14,7 @@ public class WebSocketHandler
     public Guid ServerId { get; } = Guid.NewGuid();
     public async Task OnConnect(WebSocket socket, Channel channel)
     {
-        ConnectionManager.Add(socket, channel.Id ?? throw new CourierException("Invalid Channel"));
+        ConnectionManager.Add(socket, channel.Id);
 
         Message message = new()
         {

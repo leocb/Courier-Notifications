@@ -1,22 +1,29 @@
 ﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
-using CN.Desktop.Display.Providers;
+using CN.Desktop.Display.Helpers;
+using CN.Desktop.Display.Managers;
 using CN.Models;
 
 namespace CN.Desktop.Display.Viewmodels;
 
-public class ConnectionViewmodel : INotifyPropertyChanged
+public class MainViewmodel : INotifyPropertyChanged
 {
     private ConnectionStatus status;
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged(string? propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public ConnectionViewmodel()
+    public MainViewmodel()
     {
-        Properties.Settings.Default.PropertyChanged += (s, e) => { NotifyPropertyChanged(null); };
+        SocketManager.OnStatusChanged += SocketManager_OnStatusChanged;
+    }
+
+    private void SocketManager_OnStatusChanged(ConnectionStatus status)
+    {
+        Status = status;
     }
 
     public ConnectionStatus Status
@@ -43,29 +50,25 @@ public class ConnectionViewmodel : INotifyPropertyChanged
         _ => false,
     };
 
-    public void ConnectClickCmdHandler()
+    public async Task ConnectToAll()
+    {
+        await SocketManager.OpenAll();
+    }
+    public async Task CloseAll()
+    {
+        await SocketManager.CloseAllChannels();
+    }
+
+    public async void ConnectClickCmdHandler()
     {
         switch (this.Status)
         {
             case ConnectionStatus.Connected:
-                ConnectionManager.CloseAllChannels();
-                break;
-            case ConnectionStatus.Disconnected:
-            case ConnectionStatus.Error:
-                if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ServerChannels))
-                {
-                    Properties.Settings.Default.ServerChannels = ConnectionManager.CreateRandomChannelID();
-                    NotifyPropertyChanged(this.ConnectButtonText);
-                    break;
-                }
-                else
-                {
-                    ConnectionManager.OpenAllChannels();
-                }
-
+                await CloseAll();
                 break;
             default:
-                return;
+                await ConnectToAll();
+                break;
         }
     }
 
@@ -83,8 +86,8 @@ public class ConnectionViewmodel : INotifyPropertyChanged
     public string ConnectButtonText => this.Status switch
     {
         ConnectionStatus.Connected => "Desconectar",
-        ConnectionStatus.Disconnected => string.IsNullOrWhiteSpace(Properties.Settings.Default.ServerChannels) ? "Criar Canal" : "Conectar",
-        ConnectionStatus.Error => string.IsNullOrWhiteSpace(Properties.Settings.Default.ServerChannels) ? "Criar Canal" : "Tentar novamente",
+        ConnectionStatus.Disconnected => "Conectar",
+        ConnectionStatus.Error => "Tentar novamente",
         ConnectionStatus.Connecting => "Conectando...",
         ConnectionStatus.Disconnecting => "Desconectando...",
         ConnectionStatus.None => "Iniciando...",
