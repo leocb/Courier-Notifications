@@ -108,6 +108,32 @@ public class ChannelDataProvider
         }).ConfigureAwait(false);
     }
 
+    public async Task<List<ChannelRoles>> GetChannelRolesBulk(List<Guid> channelList, Guid ownerId)
+    {
+        return await Task.Run(() =>
+        {
+            List<ChannelRoles> rolesData = [];
+            foreach (Guid channelId in channelList)
+            {
+                ChannelRoles roles;
+                try
+                {
+                    roles = GetRoles(channelId);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                roles.ValidateOwner(ownerId);
+                rolesData.Add(roles);
+            }
+
+            return rolesData;
+
+        }).ConfigureAwait(false);
+    }
+
     public async Task VerifyAllowedSender(Guid channelId, Guid senderId)
     {
         await Task.Run(() =>

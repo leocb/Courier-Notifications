@@ -18,6 +18,16 @@ public class ChannelRoleController(ChannelDataProvider channelProvider) : Contro
         return Ok(roles.AllowedSenders);
     }
 
+    [HttpGet("bulk")]
+    public async Task<ActionResult<List<ChannelRoles>>> GetRolesBulk(
+        [FromHeader] Guid ownerId,
+        [FromBody] List<Guid> channelIdList
+    )
+    {
+        List<ChannelRoles> roles = await channelProvider.GetChannelRolesBulk(channelIdList, ownerId);
+        return Ok(roles);
+    }
+
     [HttpPost("sender")]
     public async Task<ActionResult> AllowSender(
         [FromHeader] Guid ownerId,
