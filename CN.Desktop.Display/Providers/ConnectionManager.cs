@@ -3,11 +3,11 @@
 using Microsoft.Win32;
 
 namespace CN.Desktop.Display.Managers;
-internal static class ConnectionManager
+public static class ConnectionManager
 {
     private static readonly string RegistryKeyPath = @"HKEY_CURRENT_USER\Software\Courier Notifications";
     private static readonly string RegistryValueName = @"ownerId";
-    internal static Guid OwnerId { get; } = InitOwnerId();
+    public static Guid OwnerId { get; } = InitOwnerId();
 
     static ConnectionManager()
     {

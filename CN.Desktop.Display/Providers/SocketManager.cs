@@ -1,25 +1,34 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-using CN.Desktop.Display.Providers;
 using CN.Models;
 using CN.Models.Exceptions;
 using CN.Models.Messages;
 
 using WebSocket4Net;
 
-namespace CN.Desktop.Display.Managers;
+namespace CN.Desktop.Display.Providers;
+
+public enum ConnectionStatus
+{
+    None,
+    Connected,
+    Disconnected,
+    Connecting,
+    Disconnecting,
+    Error
+}
 
 public static class SocketManager
 {
     public delegate void StatusUpdateHandler(ConnectionStatus status);
     public static event StatusUpdateHandler OnStatusChanged = delegate { };
-    private static readonly ObservableCollection<WebSocket> webSockets = [];
+    private static readonly List<WebSocket> webSockets = [];
 
     static SocketManager()
     {
@@ -39,8 +48,16 @@ public static class SocketManager
             await CloseAllChannels();
 
         OnStatusChanged.Invoke(ConnectionStatus.Connecting);
-
-        await ChannelManager.LoadChannelsFromServer();
+        try
+        {
+            await ChannelManager.LoadChannelsFromServer();
+        }
+        catch (Exception ex)
+        {
+            SystemMessage.Error($"Error: {ex.Message}");
+            OnStatusChanged.Invoke(ConnectionStatus.Error);
+            return;
+        }
 
         foreach (Guid channelId in ChannelManager.Channels.Select(c => c.Id))
         {
@@ -50,8 +67,8 @@ public static class SocketManager
         if (ChannelManager.Channels.Count != webSockets.Count(ws => ws.State == WebSocketState.Open))
         {
             await CloseAllChannels();
-            SystemMessage.Error($"Error: Some channels could not be connected.");
             OnStatusChanged.Invoke(ConnectionStatus.Error);
+            SystemMessage.Error($"Error: Some channels could not be connected.");
             return;
         }
 
@@ -67,6 +84,7 @@ public static class SocketManager
         {
             await Close(ws);
         }
+
         webSockets.Clear();
         OnStatusChanged.Invoke(ConnectionStatus.Disconnected);
     }
@@ -103,6 +121,7 @@ public static class SocketManager
         }
         catch (Exception ex)
         {
+            OnStatusChanged.Invoke(ConnectionStatus.Error);
             SystemMessage.Error($"Error: {ex.Message}");
         }
     }
@@ -111,10 +130,11 @@ public static class SocketManager
     {
         try
         {
-            await ws.CloseAsync();
+            _ = await ws.CloseAsync();
         }
         catch (Exception ex)
         {
+            OnStatusChanged.Invoke(ConnectionStatus.Error);
             SystemMessage.Error($"Error: {ex.Message}. Socket abandoned.");
         }
     }
@@ -138,6 +158,7 @@ public static class SocketManager
     private static void OnWsError(object? sender, SuperSocket.ClientEngine.ErrorEventArgs e)
     {
         string message = $"WS Error: {e.Exception.Message}";
-        SystemMessage.Info(message);
+        OnStatusChanged.Invoke(ConnectionStatus.Error);
+        SystemMessage.Error(message);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 
+using CN.Desktop.Display.Providers;
 using CN.Desktop.Display.Viewmodels;
 
 namespace CN.Desktop.Display.Views;
@@ -19,6 +20,12 @@ public partial class Main : Window
     private void ConfigBtn_Click(object sender, RoutedEventArgs e)
     {
         MessageSettings config = new();
+        _ = config.ShowDialog();
+    }
+
+    private void ChannelConfigBtn_Click(object sender, RoutedEventArgs e)
+    {
+        ChannelSettings config = new(ChannelManager.Channels[0]);
         _ = config.ShowDialog();
     }
 

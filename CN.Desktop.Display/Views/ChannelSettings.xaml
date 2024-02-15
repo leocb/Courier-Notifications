@@ -19,83 +19,8 @@
         Height="700"
         Width="500">
 
-  <Window.Resources>
-    <DataTemplate x:Key="Field">
-      <TabItem Header="Campo 1"
-               IsTabStop="False">
-
-        <Grid Margin="10">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1.5*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-          </Grid.RowDefinitions>
-
-          <Button Grid.Row="0"
-                  Grid.RowSpan="3"
-                  Panel.ZIndex="1"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Top"
-                  Style="{StaticResource MaterialDesignOutlinedButton}">
-            <materialDesign:PackIcon Kind="Delete" />
-          </Button>
-
-          <TextBlock Grid.Row="0"
-                     VerticalAlignment="Bottom"
-                     HorizontalAlignment="Left"
-                     Text="Propriedades do campo 1"
-                     Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
-          <TextBox Grid.Row="1"
-                   materialDesign:HintAssist.Hint="Nome do campo"
-                   Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-          <CheckBox Grid.Row="2"
-                    HorizontalAlignment="Left"
-                    Content="Somente números" />
-
-          <TextBlock Grid.Row="3"
-                     Text="Texto Principal"
-                     VerticalAlignment="Bottom"
-                     Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
-          <TextBox Grid.Row="4"
-                   materialDesign:HintAssist.Hint="Regex de Validação"
-                   Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-          <TextBox Grid.Row="5"
-                   materialDesign:HintAssist.Hint="Texto antes do campo"
-                   Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-          <TextBox Grid.Row="6"
-                   materialDesign:HintAssist.Hint="Texto depois do campo"
-                   Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-
-          <TextBlock Grid.Row="7"
-                     Text="Texto Alternativo"
-                     VerticalAlignment="Bottom"
-                     Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
-          <TextBox Grid.Row="8"
-                   materialDesign:HintAssist.Hint="Regex de texto alternativo"
-                   Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-          <TextBox Grid.Row="9"
-                   materialDesign:HintAssist.Hint="Texto alternativo antes do campo"
-                   Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-          <TextBox Grid.Row="10"
-                   materialDesign:HintAssist.Hint="Texto alternativo depois do campo"
-                   Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-        </Grid>
-      </TabItem>
-    </DataTemplate>
-  </Window.Resources>
-
-  <Grid ClipToBounds="False">
+  <Grid ClipToBounds="False"
+        IsEnabled="{Binding IsNotBusy}">
     <Grid.RowDefinitions>
       <RowDefinition Height="auto" />
       <RowDefinition Height="1*" />
@@ -107,19 +32,20 @@
       <Grid Margin="10">
         <StackPanel>
           <TextBlock Margin="20,0,0,0"
-                     Text="Novo Canal"
+                     Text="{Binding WindowTitle}"
                      Style="{StaticResource MaterialDesignHeadline4TextBlock}" />
           <TextBlock Margin="20,0,0,0"
-                     Text="ID: Crie o canal para saber"
+                     Text="{Binding ChannelId}"
                      Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
         </StackPanel>
 
         <Button x:Name="Confirm"
+                Command="{Binding ConfirmCommand}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Style="{StaticResource MaterialDesignFloatingActionMiniSecondaryButton}"
                 materialDesign:ButtonProgressAssist.IsIndeterminate="True"
-                materialDesign:ButtonProgressAssist.IsIndicatorVisible="False"
+                materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsBusy}"
                 materialDesign:ButtonProgressAssist.Value="-1"
                 ToolTip="Confirmar">
           <materialDesign:PackIcon Kind="Check" />
@@ -142,10 +68,12 @@
         <StackPanel Orientation="Vertical"
                     Margin="10,2,10,10">
           <TextBox Grid.Row="0"
+                   Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    materialDesign:HintAssist.Hint="Nome do Canal"
                    Style="{StaticResource MaterialDesignFloatingHintTextBox}">
           </TextBox>
           <TextBox Grid.Row="0"
+                   Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    materialDesign:HintAssist.Hint="Descrição"
                    Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
         </StackPanel>
@@ -157,11 +85,106 @@
                            HorizontalAlignment="Stretch"
                            UniformCornerRadius="10"
                            materialDesign:ElevationAssist.Elevation="Dp4">
-        <TabControl IsTabStop="False"
-                    Style="{StaticResource MaterialDesignFilledTabControl}"
-                    TabStripPlacement="Left">
+        <Grid>
+          <Button Command="{Binding AddFieldCommand}"
+                  Panel.ZIndex="10"
+                  Margin="10"
+                  Padding="0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Top"
+                  Style="{StaticResource MaterialDesignOutlinedButton}"
+                  ToolTip="Adicionar Campo">
+            <materialDesign:PackIcon Kind="NewBox"
+                                     Margin="10,5"
+                                     VerticalAlignment="Center" />
+          </Button>
+          <TabControl IsTabStop="False"
+                      Style="{StaticResource MaterialDesignFilledTabControl}"
+                      TabStripPlacement="Left"
+                      ItemsSource="{Binding Fields}">
+            <TabControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Header}" />
+              </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+              <DataTemplate>
+                <TabItem Header="Campo 1"
+                         IsTabStop="False">
 
-        </TabControl>
+                  <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="auto" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1.5*" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1*" />
+                      <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+
+                    <Button Command="{Binding RemoveFieldCommand}"
+                            Grid.Row="0"
+                            Grid.RowSpan="3"
+                            Panel.ZIndex="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Style="{StaticResource MaterialDesignOutlinedButton}">
+                      <materialDesign:PackIcon Kind="Delete" />
+                    </Button>
+
+                    <TextBlock Grid.Row="0"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Left"
+                               Text="Propriedades do campo 1"
+                               Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
+                    <TextBox Grid.Row="1"
+                             materialDesign:HintAssist.Hint="Nome do campo"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <CheckBox Grid.Row="2"
+                              HorizontalAlignment="Left"
+                              Content="Somente números" />
+
+                    <TextBlock Grid.Row="3"
+                               Text="Texto Principal"
+                               VerticalAlignment="Bottom"
+                               Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
+                    <TextBox Grid.Row="4"
+                             materialDesign:HintAssist.Hint="Regex de Validação"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox Grid.Row="5"
+                             materialDesign:HintAssist.Hint="Texto antes do campo"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox Grid.Row="6"
+                             materialDesign:HintAssist.Hint="Texto depois do campo"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+
+                    <TextBlock Grid.Row="7"
+                               Text="Texto Alternativo"
+                               VerticalAlignment="Bottom"
+                               Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
+                    <TextBox Grid.Row="8"
+                             materialDesign:HintAssist.Hint="Regex de texto alternativo"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox Grid.Row="9"
+                             materialDesign:HintAssist.Hint="Texto alternativo antes do campo"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox Grid.Row="10"
+                             materialDesign:HintAssist.Hint="Texto alternativo depois do campo"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                  </Grid>
+                </TabItem>
+              </DataTemplate>
+            </TabControl.ContentTemplate>
+          </TabControl>
+        </Grid>
       </materialDesign:Card>
     </Grid>
   </Grid>

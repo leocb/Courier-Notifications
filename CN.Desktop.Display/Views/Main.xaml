@@ -3,10 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:properties="clr-namespace:CN.Desktop.Display.Properties"
-        xmlns:local="clr-namespace:CN.Desktop.Display"
-        xmlns:vm="clr-namespace:CN.Desktop.Display.Viewmodels"
-        xmlns:pv="clr-namespace:CN.Desktop.Display.Providers"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -50,7 +46,6 @@
                                    Height="24" />
         </Button>
 
-        <!--<TextBlock Text="OK  •  23:54  •  CasaKids: Chamar Responsavel  •  Leonardo Bottaro"-->
         <TextBlock Text="{Binding Info}"
                    Style="{StaticResource MaterialDesignCharacterCounterTextBlock}"
                    Grid.Column="1"
@@ -58,7 +53,6 @@
                    HorizontalAlignment="Left"
                    VerticalAlignment="Bottom" />
 
-        <!--<TextBlock Text="Responsavel por Leonardo Cesar Bottaro, 9 anos, 9231, favor comparecer a CasaKids..."-->
         <TextBlock Text="{Binding Text}"
                    Style="{StaticResource MaterialDesignBody1TextBlock}"
                    TextWrapping="Wrap"
@@ -104,22 +98,24 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center">
           <TextBlock Margin="0"
-                     Text="Tudo OK"
+                     Text="{Binding StatusText}"
                      VerticalAlignment="Center"
-                     Style="{StaticResource MaterialDesignBody1TextBlock}" />
-          <Button Margin="10,0,10,0"
+                     Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+          <Button Margin="20,0,10,0"
                   HorizontalAlignment="Right"
                   VerticalAlignment="Center"
                   IsEnabled="{Binding ConnectButtonEnabled}"
                   Command="{Binding ConnectCommand}"
                   Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}">
-            <materialDesign:PackIcon Kind="Check" />
+            <materialDesign:PackIcon Kind="{Binding ActionIcon}" />
           </Button>
-          <materialDesign:PopupBox IsEnabled="True"
+          <materialDesign:PopupBox IsEnabled="{Binding ServerConfigEnabled}"
                                    PlacementMode="BottomAndAlignRightEdges">
             <StackPanel>
-              <Button Content="Configurar" />
-              <Button Content="Canais" />
+              <Button Content="Configurar"
+                      Click="ConfigBtn_Click" />
+              <Button Content="Canais"
+                      Click="ChannelConfigBtn_Click" />
             </StackPanel>
           </materialDesign:PopupBox>
         </StackPanel>
@@ -136,7 +132,7 @@
                              UniformCornerRadius="10"
                              materialDesign:ElevationAssist.Elevation="Dp3">
           <StackPanel>
-            <ItemsControl ItemsSource="{Binding Source={x:Static pv:MessageQueue.Messages}}"
+            <ItemsControl ItemsSource="{Binding Messages}"
                           ItemTemplate="{StaticResource messageTemplate}" />
           </StackPanel>
         </materialDesign:Card>

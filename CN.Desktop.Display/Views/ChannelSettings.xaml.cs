@@ -12,14 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using CN.Desktop.Display.Viewmodels;
+using CN.Models.Channels;
+
 namespace CN.Desktop.Display.Views;
 /// <summary>
 /// Interaction logic for ChannelSettings.xaml
 /// </summary>
 public partial class ChannelSettings : Window
 {
-    public ChannelSettings()
+    public ChannelSettings(Channel channel)
     {
         InitializeComponent();
+        DataContext = new ChannelViewModel(channel, ChannelWindowMode.Creating);
     }
 }

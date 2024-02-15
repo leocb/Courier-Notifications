@@ -1,18 +1,20 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
 using CN.Desktop.Display.Helpers;
-using CN.Desktop.Display.Managers;
-using CN.Models;
+using CN.Desktop.Display.Providers;
+using CN.Desktop.Display.Views;
+
+using MaterialDesignThemes.Wpf;
+
 
 namespace CN.Desktop.Display.Viewmodels;
 
 public class MainViewmodel : INotifyPropertyChanged
 {
-    private ConnectionStatus status;
-
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged(string? propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
@@ -21,11 +23,14 @@ public class MainViewmodel : INotifyPropertyChanged
         SocketManager.OnStatusChanged += SocketManager_OnStatusChanged;
     }
 
+    public ObservableCollection<MessageViewmodel> Messages => MessageQueue.Messages;
+
     private void SocketManager_OnStatusChanged(ConnectionStatus status)
     {
         Status = status;
     }
 
+    private ConnectionStatus status;
     public ConnectionStatus Status
     {
         get => this.status;
@@ -83,14 +88,25 @@ public class MainViewmodel : INotifyPropertyChanged
         _ => new SolidColorBrush(Color.FromArgb(255, 181, 199, 199)),
     };
 
-    public string ConnectButtonText => this.Status switch
+    public PackIconKind ActionIcon => this.Status switch
     {
-        ConnectionStatus.Connected => "Desconectar",
-        ConnectionStatus.Disconnected => "Conectar",
-        ConnectionStatus.Error => "Tentar novamente",
-        ConnectionStatus.Connecting => "Conectando...",
-        ConnectionStatus.Disconnecting => "Desconectando...",
-        ConnectionStatus.None => "Iniciando...",
+        ConnectionStatus.Connected => PackIconKind.CloseThick,
+        ConnectionStatus.Disconnected => PackIconKind.Connection,
+        ConnectionStatus.Error => PackIconKind.Connection,
+        ConnectionStatus.Connecting => PackIconKind.LanConnect,
+        ConnectionStatus.Disconnecting => PackIconKind.LanConnect,
+        ConnectionStatus.None => PackIconKind.Connection,
+        _ => PackIconKind.Connection,
+    };
+
+    public string StatusText => this.Status switch
+    {
+        ConnectionStatus.Connected => "Conectado",
+        ConnectionStatus.Disconnected => "Desconectado",
+        ConnectionStatus.Error => "Algo deu errado",
+        ConnectionStatus.Connecting => "Aguarde...",
+        ConnectionStatus.Disconnecting => "Finalizando...",
+        ConnectionStatus.None => "Carregando...",
         _ => "?",
     };
 }

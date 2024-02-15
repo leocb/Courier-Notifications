@@ -5,14 +5,14 @@ using System.Windows.Media.Imaging;
 using QRCoder;
 
 namespace CN.Desktop.Display.Helpers;
-internal static class QrCode
+public static class QrCode
 {
     /// <summary>
     /// Generates a BitmapImage QRCode from a object's ToString() function 
     /// </summary>
     /// <param name="data">object to be ToString()'ed</param>
     /// <returns>A WPF Compatible Bitmap Image</returns>
-    internal static BitmapImage GetQrCode(object data)
+    public static BitmapImage GetQrCode(object data)
     {
         using MemoryStream stream = new();
         QRCodeData qrCodeData = new QRCodeGenerator().CreateQrCode(data.ToString(), QRCodeGenerator.ECCLevel.Q);

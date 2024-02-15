@@ -3,9 +3,9 @@
 using MaterialDesignThemes.Wpf;
 
 namespace CN.Desktop.Display.Helpers;
-internal static class ThemeHelper
+public static class ThemeHelper
 {
-    internal static void SetTheme()
+    public static void SetTheme()
     {
         PaletteHelper paletteHelper = new();
         ITheme theme = paletteHelper.GetTheme();

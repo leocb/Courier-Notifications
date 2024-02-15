@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -28,15 +27,15 @@ public class MessageViewmodel(Message message) : INotifyPropertyChanged
         MessageStatus.Info => "INFORMAÇÃO",
         _ => "ERRO",
     };
-    public string DateTimeText => this.Message.Date.ToString("HH:mm");
+    public string DateTimeText => this.Message.Date.ToString("HH:mm:ss");
     public string FromName => "";
     public string ChannelName => "";
 
     public PackIconKind Icon => this.Status switch
     {
-        MessageStatus.Queued => PackIconKind.NewBox,
+        MessageStatus.Queued => PackIconKind.DotsHorizontal,
         MessageStatus.BeingDisplayed => PackIconKind.ArrowUpBoldCircle,
-        MessageStatus.Canceled => PackIconKind.CloseOctagon,
+        MessageStatus.Canceled => PackIconKind.Cancel,
         MessageStatus.Info => PackIconKind.InformationVariant,
         MessageStatus.Error => PackIconKind.Fire,
         MessageStatus.OK => PackIconKind.Check,
@@ -44,7 +43,9 @@ public class MessageViewmodel(Message message) : INotifyPropertyChanged
         _ => PackIconKind.CloudQuestion
     };
 
-    public string Info => $"{this.StatusText}  •  {this.DateTimeText}  •  {this.ChannelName}  •  {this.FromName}";
+    public string Info => $"{this.StatusText}  •  {this.DateTimeText}" +
+        (!string.IsNullOrEmpty(this.ChannelName) ? $"  •  {this.ChannelName}" : "") +
+        (!string.IsNullOrEmpty(this.FromName) ? $"  •  {this.FromName}" : "");
 
     public MessageStatus Status
     {
