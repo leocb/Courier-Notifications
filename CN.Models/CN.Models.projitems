@@ -13,7 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Option.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Channels\Field.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Channels\Channel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ConnectionStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\Message.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messages\MessageStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Roles\Sender.cs" />
