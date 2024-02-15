@@ -20,9 +20,13 @@ public static class ConnectionManager
         if (socket is null)
             return;
 
-        await socket.CloseAsync(
-            WebSocketCloseStatus.NormalClosure,
-            "Connection closed by the Server",
-            CancellationToken.None);
+        try
+        {
+            await socket.CloseAsync(
+                WebSocketCloseStatus.NormalClosure,
+                "Connection closed by the Server",
+                CancellationToken.None);
+        }
+        catch { /* The motherfucker left before we could serve him tea */ }
     }
 }

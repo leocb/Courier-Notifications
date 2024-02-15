@@ -34,19 +34,27 @@ public class WebSocketController(WebSocketHandler wsHandler, ChannelDataProvider
     private async Task WsLoop(WebSocket ws)
     {
         byte[] buffer = new byte[1024 * 4];
-
-        while (ws.State == WebSocketState.Open)
+        try
         {
-            WebSocketReceiveResult result = await ws.ReceiveAsync(buffer, CancellationToken.None);
 
-            if (result.MessageType == WebSocketMessageType.Close)
+            while (ws.State == WebSocketState.Open)
             {
-                await wsHandler.OnDisconnect(ws);
-                break;
-            }
+                WebSocketReceiveResult result = await ws.ReceiveAsync(buffer, CancellationToken.None);
 
-            // for now, ignore anything we receive on ws from clients
-            // await this.WsHandler.ReceiveAsync(ws, result, buffer);
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    await wsHandler.OnDisconnect(ws);
+                    break;
+                }
+
+                // for now, ignore anything we receive on ws from clients
+                // await this.WsHandler.ReceiveAsync(ws, result, buffer);
+            }
+        }
+        catch
+        {
+            // The son of a bitch didn't even say goodbye :(
+            await wsHandler.OnDisconnect(ws);
         }
     }
 }
