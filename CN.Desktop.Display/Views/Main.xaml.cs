@@ -25,7 +25,7 @@ public partial class Main : Window
 
     private void ChannelConfigBtn_Click(object sender, RoutedEventArgs e)
     {
-        ChannelSettings config = new(ChannelManager.Channels[0]);
+        ChannelSettings config = new(ChannelManager.Channels[0], ChannelWindowMode.Editing);
         _ = config.ShowDialog();
     }
 

@@ -5,10 +5,10 @@ using System.Data;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using CN.Desktop.Display.Managers;
 using CN.Models;
 using CN.Models.Channels;
 using CN.Models.Exceptions;
@@ -99,9 +99,9 @@ public static class ChannelManager
             $"{baseUrl}/api/channel")
             {
                 Content = new StringContent(
-            JsonSerializer.Serialize(channel, Options.JsonSerializer),
-            null,
-            "application/json")
+                JsonSerializer.Serialize(channel, Options.JsonSerializer),
+                null,
+                "application/json")
             };
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
@@ -127,9 +127,9 @@ public static class ChannelManager
             $"{baseUrl}/api/channel?channelId={upChannel.Id}")
             {
                 Content = new StringContent(
-            JsonSerializer.Serialize(upChannel, Options.JsonSerializer),
-            null,
-            "application/json")
+                JsonSerializer.Serialize(upChannel, Options.JsonSerializer),
+                Encoding.UTF8,
+                "application/json")
             };
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();

@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 using CN.Desktop.Display.Viewmodels;
 using CN.Models.Channels;
@@ -21,9 +9,11 @@ namespace CN.Desktop.Display.Views;
 /// </summary>
 public partial class ChannelSettings : Window
 {
-    public ChannelSettings(Channel channel)
+    public ChannelSettings(Channel channel, ChannelWindowMode mode)
     {
+        ChannelViewModel vm = new(channel, mode);
         InitializeComponent();
-        DataContext = new ChannelViewModel(channel, ChannelWindowMode.Creating);
+        this.DataContext = vm;
+        vm.CloseRequest += Close;
     }
 }

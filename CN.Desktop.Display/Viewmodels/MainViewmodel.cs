@@ -43,7 +43,7 @@ public class MainViewmodel : INotifyPropertyChanged
 
     public ICommand ConnectCommand => new CommandHandler(ConnectClickCmdHandler, this.ConnectButtonEnabled);
 
-    private bool ConnectButtonEnabled => this.Status switch
+    public bool ConnectButtonEnabled => this.Status switch
     {
         ConnectionStatus.Connected or ConnectionStatus.Disconnected or ConnectionStatus.Error => true,
         _ => false,

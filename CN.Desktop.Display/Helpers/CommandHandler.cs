@@ -5,13 +5,13 @@ namespace CN.Desktop.Display.Helpers;
 
 public class CommandHandler : ICommand
 {
-    public CommandHandler(Action<object?> action, bool canExecute)
+    public CommandHandler(Action<object?> action, bool canExecute = true)
     {
         this._action = action;
         this._canExecute = canExecute;
     }
 
-    public CommandHandler(Action action, bool canExecute) {
+    public CommandHandler(Action action, bool canExecute = true) {
         this._action = (a) => action.Invoke();
         this._canExecute = canExecute;
     }

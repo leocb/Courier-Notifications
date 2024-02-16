@@ -18,6 +18,7 @@ public enum ChannelWindowMode
 
 public class ChannelViewModel : INotifyPropertyChanged
 {
+    public event Action CloseRequest = delegate { };
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged(string? propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
@@ -27,8 +28,14 @@ public class ChannelViewModel : INotifyPropertyChanged
     {
         this.channel = channel;
         this.windowMode = windowMode;
+        if (channel.Fields.Count == 0)
+        {
+            channel.Fields.Add(new());
+        }
+
         this.Fields = new(channel.Fields.Select(f => new FieldViewModel(f, this)));
         ChannelManager.OnStatusChanged += ChannelManager_OnStatusChanged;
+        this.SelectedItem = this.Fields[0];
     }
 
     private readonly ChannelWindowMode windowMode;
@@ -76,27 +83,49 @@ public class ChannelViewModel : INotifyPropertyChanged
     }
 
     public ObservableCollection<FieldViewModel> Fields { get; }
+    public FieldViewModel SelectedItem { get; set; }
 
-    public ICommand AddFieldCommand => new CommandHandler(AddField, true);
-    public ICommand ConfirmCommand => new CommandHandler(Confirm, true);
+    public ICommand AddFieldCommand => new CommandHandler(AddField);
+    public ICommand ConfirmCommand => new CommandHandler(Confirm);
 
     private void AddField()
     {
         Field field = new();
         this.channel.Fields.Add(field);
-        this.Fields.Add(new(field, this));
+        FieldViewModel vm = new(field, this);
+        this.Fields.Add(vm);
+        this.SelectedItem = vm;
+        NotifyPropertyChanged(nameof(this.SelectedItem));
+    }
+
+    public void RemoveField(FieldViewModel field)
+    {
+        if (this.Fields.Count <= 1)
+            return;
+
+        _ = this.Fields.Remove(field);
+        _ = this.channel.Fields.Remove(field.Field);
     }
 
     private async void Confirm()
     {
-        switch (this.windowMode)
+        try
         {
-            case ChannelWindowMode.Creating:
-                await ChannelManager.Create(this.channel);
-                break;
-            case ChannelWindowMode.Editing:
-                await ChannelManager.Update(this.channel);
-                break;
+            switch (this.windowMode)
+            {
+                case ChannelWindowMode.Creating:
+                    await ChannelManager.Create(this.channel);
+                    break;
+                case ChannelWindowMode.Editing:
+                    await ChannelManager.Update(this.channel);
+                    break;
+            }
+
+            this.CloseRequest.Invoke();
+        }
+        catch (Exception e)
+        {
+            await DialogHelper.ShowMessage(e.Message);
         }
     }
 }
