@@ -14,8 +14,8 @@ public class ChannelDataProvider
     public ChannelDataProvider(LiteDbContext context)
     {
         this.context = context;
-        this.channelsDb = this.context.ChannelDatabase.GetCollection<Channel?>("Channels");
-        this.channelRolesDb = this.context.ChannelDatabase.GetCollection<ChannelRoles?>("ChannelRoles");
+        this.channelsDb = this.context.DatabaseInstance.GetCollection<Channel?>("Channels");
+        this.channelRolesDb = this.context.DatabaseInstance.GetCollection<ChannelRoles?>("ChannelRoles");
     }
 
     public async Task<Guid> CreateChannel(Guid ownerId, Channel data)
