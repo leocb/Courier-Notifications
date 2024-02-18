@@ -9,24 +9,23 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         mc:Ignorable="d"
-        DataContext="{x:Static properties:Settings.Default}"
         Title=""
         Height="500"
         Width="705"
         ResizeMode="NoResize"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewmodels="clr-namespace:CN.Desktop.Display.Viewmodels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:ChannelSelectViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-        Topmost="{Binding AlwaysVisible}"
-        Loaded="MainWindow_OnLoaded">
+        FontFamily="{DynamicResource MaterialDesignFont}">
 
   <Window.Resources>
-    <DataTemplate x:Key="ChannelRow">
+    <DataTemplate x:Key="ChannelRow" DataType="viewmodels:ChannelSelectItemViewModel">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition />
@@ -40,41 +39,35 @@
 
         <StackPanel Margin="10"
                     Orientation="Horizontal">
-          <Button Style="{StaticResource MaterialDesignToolButton}"
+          <Button Command="{Binding EditUsersCommand}"
+                  Style="{StaticResource MaterialDesignToolButton}"
                   ToolTip="Usuarios">
             <materialDesign:PackIcon Kind="User" />
           </Button>
-          <Button Style="{StaticResource MaterialDesignToolButton}"
+          <Button Command="{Binding EditCommand}"
+                  Style="{StaticResource MaterialDesignToolButton}"
                   ToolTip="Editar">
             <materialDesign:PackIcon Kind="Edit" />
           </Button>
-          <Button Style="{StaticResource MaterialDesignToolButton}"
+          <Button Command="{Binding DeleteCommand}"
+                  Style="{StaticResource MaterialDesignToolButton}"
                   ToolTip="Excluir">
             <materialDesign:PackIcon Kind="Delete" />
           </Button>
         </StackPanel>
 
-        <TextBlock Text="ComuKids: Chamar responsavel"
+        <TextBlock Text="{Binding Name}"
                    TextTrimming="CharacterEllipsis"
                    Margin="0"
                    Grid.Column="1"
                    VerticalAlignment="Center"
                    Style="{StaticResource MaterialDesignBody1TextBlock}" />
 
-        <StackPanel Margin="10,0"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-          <TextBlock Margin="0,0,5,0"
-                     Text="a5d9ecb2-9c7a-435a-8e97-c7f88d2430d8"
-                     Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
-          <StackPanel Orientation="Horizontal">
-            <Button Style="{StaticResource MaterialDesignToolButton}">
-              <materialDesign:PackIcon Kind="Check"
-                                       ToolTip="Conectado" />
-            </Button>
-          </StackPanel>
-        </StackPanel>
+        <TextBlock Text="{Binding Id}"
+                   Margin="10,0"
+                   Grid.Column="2"
+                   VerticalAlignment="Center"
+                   Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
 
         <Rectangle Grid.Row="1"
                    Grid.ColumnSpan="3"
@@ -85,66 +78,68 @@
       </Grid>
     </DataTemplate>
   </Window.Resources>
+  <materialDesign:DialogHost Identifier="ChannelSelect">
 
-  <Grid ClipToBounds="False">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="1*" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="1*" />
-    </Grid.ColumnDefinitions>
+    <Grid ClipToBounds="False">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="1*" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="1*" />
+      </Grid.ColumnDefinitions>
 
-    <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp6"
-                              Mode="PrimaryMid">
+      <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp6"
+                                Mode="PrimaryMid">
 
-      <Grid Margin="10">
-        <TextBlock Margin="20,0,0,0"
-                   VerticalAlignment="Center"
-                   Text="Gerenciar canais"
-                   Style="{StaticResource MaterialDesignHeadline4TextBlock}" />
+        <Grid Margin="10">
+          <TextBlock Margin="20,0,0,0"
+                     VerticalAlignment="Center"
+                     Text="Gerenciar canais"
+                     Style="{StaticResource MaterialDesignHeadline4TextBlock}" />
 
-        <StackPanel Orientation="Horizontal"
+          <StackPanel Orientation="Horizontal"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center">
+            <Button Command="{Binding RefreshCommand}"
+                    Margin="0,0,10,0"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
-          <Button x:Name="refresh"
-                  Margin="0,0,10,0"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Center"
-                  Click="OKBtn_Click"
-                  Style="{StaticResource MaterialDesignIconForegroundButton}"
-                  ToolTip="Atualizar">
-            <materialDesign:PackIcon Kind="Refresh" />
-          </Button>
-          <Button x:Name="Add"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Center"
-                  Click="OKBtn_Click"
-                  Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
-                  ToolTip="Novo Canal">
-            <materialDesign:PackIcon Kind="Add" />
-          </Button>
-        </StackPanel>
-      </Grid>
-    </materialDesign:ColorZone>
-
-    <ScrollViewer Grid.Row="1"
-                  VerticalAlignment="Stretch"
-                  VerticalScrollBarVisibility="Auto">
-      <StackPanel>
-        <materialDesign:Card Margin="10"
-                             HorizontalAlignment="Stretch"
-                             VerticalAlignment="Top"
-                             UniformCornerRadius="10"
-                             materialDesign:ElevationAssist.Elevation="Dp3">
-          <StackPanel>
-            <TextBlock Margin="20"
-                       Text="Crie um canal usando o botão acima" />
-
+                    Style="{StaticResource MaterialDesignIconForegroundButton}"
+                    ToolTip="Atualizar">
+              <materialDesign:PackIcon Kind="Refresh" />
+            </Button>
+            <Button Command="{Binding NewChannelCommand}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                    ToolTip="Novo Canal">
+              <materialDesign:PackIcon Kind="Add" />
+            </Button>
           </StackPanel>
-        </materialDesign:Card>
-      </StackPanel>
-    </ScrollViewer>
-  </Grid>
+        </Grid>
+      </materialDesign:ColorZone>
+
+      <ScrollViewer Grid.Row="1"
+                    VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <materialDesign:Card Margin="10"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Top"
+                               UniformCornerRadius="10"
+                               materialDesign:ElevationAssist.Elevation="Dp3">
+            <StackPanel>
+              <TextBlock Visibility="{Binding NoChannels}"
+                         Margin="20"
+                         Text="Crie um canal usando o botão acima" />
+
+              <ItemsControl ItemsSource="{Binding ChannelsItems}"
+                            ItemTemplate="{StaticResource ChannelRow}" />
+            </StackPanel>
+          </materialDesign:Card>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </materialDesign:DialogHost>
 </Window>
 

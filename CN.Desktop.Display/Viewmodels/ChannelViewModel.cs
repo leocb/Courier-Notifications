@@ -125,7 +125,7 @@ public class ChannelViewModel : INotifyPropertyChanged
         }
         catch (Exception e)
         {
-            await DialogHelper.ShowMessage(e.Message);
+            await DialogHelper.ShowMessage(e.Message, "ChannelSetting");
         }
     }
 }

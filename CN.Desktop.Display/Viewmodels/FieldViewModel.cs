@@ -20,10 +20,7 @@ public class FieldViewModel : INotifyPropertyChanged
     private readonly ChannelViewModel channelVm;
 
     public ICommand RemoveFieldCommand => new CommandHandler(RemoveField, true);
-    public void RemoveField()
-    {
-        this.channelVm.RemoveField(this);
-    }
+    public void RemoveField() => this.channelVm.RemoveField(this);
 
     public string Header => string.IsNullOrEmpty(this.Field.Name) ? "Novo Campo" : this.Field.Name;
 

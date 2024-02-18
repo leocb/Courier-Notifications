@@ -18,12 +18,24 @@
                TextWrapping="Wrap"
                Margin="0,10,0,20"/>
 
-    <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
-            CommandParameter="true"
-            Grid.Row="1"
-            IsDefault="True"
-            Style="{StaticResource MaterialDesignFlatButton}"
-            Content="OK"
-            HorizontalAlignment="Right" />
+    <StackPanel Orientation="Horizontal"
+                Grid.Row="1"
+                HorizontalAlignment="Right"
+                >
+
+      <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
+              Visibility="{Binding ConfirmMode, RelativeSource={RelativeSource AncestorType=UserControl}}"
+              Margin="0,0,10,0"
+              CommandParameter="{StaticResource FalseValue}"
+              Style="{StaticResource MaterialDesignFlatButton}"
+              Content="Cancelar"
+               />
+
+      <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
+              CommandParameter="{StaticResource TrueValue}"
+              IsDefault="True"
+              Style="{StaticResource MaterialDesignRaisedButton}"
+              Content="OK" />
+    </StackPanel>
   </Grid>
 </UserControl>

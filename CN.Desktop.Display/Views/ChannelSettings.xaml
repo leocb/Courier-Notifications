@@ -21,7 +21,8 @@
         Height="700"
         Width="700">
 
-  <materialDesign:DialogHost>
+  <materialDesign:DialogHost Identifier="ChannelSetting">
+    
     <Grid ClipToBounds="False"
           IsEnabled="{Binding IsNotBusy}">
       <Grid.RowDefinitions>

@@ -1,10 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows;
 
-using CN.Desktop.Display.Helpers;
-
-using WpfScreenHelper;
+using CN.Desktop.Display.Viewmodels;
 
 namespace CN.Desktop.Display.Views;
 
@@ -16,24 +12,6 @@ public partial class ChannelSelectSettings : Window
     public ChannelSelectSettings()
     {
         InitializeComponent();
-    }
-
-    private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
-    {
-        
-    }
-
-    private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
-    {
-        Regex regex = new("[^0-9]+");
-        e.Handled = regex.IsMatch(e.Text);
-    }
-
-    private void OKBtn_Click(object sender, RoutedEventArgs e)
-    {
-        Properties.Settings.Default.Save();
-        if (System.Windows.Interop.ComponentDispatcher.IsThreadModal)
-            this.DialogResult = true;
-        Close();
+        this.DataContext = new ChannelSelectViewModel();
     }
 }

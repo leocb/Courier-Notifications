@@ -6,10 +6,8 @@ using System.Windows.Media;
 
 using CN.Desktop.Display.Helpers;
 using CN.Desktop.Display.Providers;
-using CN.Desktop.Display.Views;
 
 using MaterialDesignThemes.Wpf;
-
 
 namespace CN.Desktop.Display.Viewmodels;
 
@@ -25,10 +23,7 @@ public class MainViewmodel : INotifyPropertyChanged
 
     public ObservableCollection<MessageViewmodel> Messages => MessageQueue.Messages;
 
-    private void SocketManager_OnStatusChanged(ConnectionStatus status)
-    {
-        Status = status;
-    }
+    private void SocketManager_OnStatusChanged(ConnectionStatus status) => this.Status = status;
 
     private ConnectionStatus status;
     public ConnectionStatus Status
@@ -55,14 +50,8 @@ public class MainViewmodel : INotifyPropertyChanged
         _ => false,
     };
 
-    public async Task ConnectToAll()
-    {
-        await SocketManager.OpenAll();
-    }
-    public async Task CloseAll()
-    {
-        await SocketManager.CloseAllChannels();
-    }
+    public async Task ConnectToAll() => await SocketManager.OpenAll();
+    public async Task CloseAll() => await SocketManager.CloseAllChannels();
 
     public async void ConnectClickCmdHandler()
     {

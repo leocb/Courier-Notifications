@@ -68,5 +68,5 @@ public static class MessageQueue
         });
     }
 
-    public static void StopCurrentMessageDisplay() => MessageWindow?.Dispatcher.Invoke(() => { MessageWindow.Close(); });
+    public static void StopCurrentMessageDisplay() => MessageWindow?.Dispatcher.Invoke(MessageWindow.Close);
 }
