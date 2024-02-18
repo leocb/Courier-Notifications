@@ -24,12 +24,25 @@ builder.Services.AddSingleton<ChannelDataProvider>();
 builder.Services.AddSingleton<LiteDbContext>();
 builder.Services.Configure<LiteDbOptions>(builder.Configuration.GetSection(LiteDbOptions.LiteDb));
 
+builder.Services.AddLocalization();
+
+builder.Services.Configure<RequestLocalizationOptions>(opts =>
+{
+    string[] supportedCultures = ["en-US", "pt-BR"];
+    _ = opts.SetDefaultCulture(supportedCultures[1])
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+    opts.ApplyCurrentCultureToResponseHeaders = true;
+});
+
 WebApplication app = builder.Build();
 
 WebSocketOptions webSocketOptions = new()
 {
     KeepAliveInterval = TimeSpan.FromMinutes(2)
 };
+
+app.UseRequestLocalization();
 
 app.UseWebSockets(webSocketOptions);
 

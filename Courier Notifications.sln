@@ -28,6 +28,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_ConfirmAddLanguageFile = False
+		RESX_AutoCreateNewLanguageFiles = True
+		RESX_SortFileContentOnSave = True
 		SolutionGuid = {7A1BAD66-BA1B-4717-BBF0-56EBDA5A96B9}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
