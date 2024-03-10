@@ -1,0 +1,54 @@
+﻿<Window x:Class="CN.Desktop.Display.Views.QrCodeView"
+        xmlns:helper="clr-namespace:CN.Desktop.Display.Helpers"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CN.Desktop.Display.Views"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewmodels="clr-namespace:CN.Desktop.Display.Viewmodels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewmodel}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Autorizar Usuário"
+        Height="370"
+        Width="290"
+        WindowStartupLocation="CenterOwner">
+  <Grid Margin="15,0,15,15">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="1*" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="1*" />
+      <ColumnDefinition Width="auto" />
+    </Grid.ColumnDefinitions>
+    <Image HorizontalAlignment="Stretch"
+           VerticalAlignment="Stretch"
+           Source="{Binding Source={x:Static helper:QrCode.ExampleImage}}"
+           Stretch="Uniform"
+           Grid.ColumnSpan="2" />
+    <TextBlock Margin="0,10"
+               Grid.Row="1"
+               Grid.ColumnSpan="2"
+               HorizontalAlignment="Center"
+               Text="Escaneie o QR-Code com a camera do celular"
+               Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
+    <TextBox Grid.Row="2"
+             Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+             materialDesign:HintAssist.Hint="Nome do Usuário"
+             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+    <Button Content="Confirmar"
+            Margin="10,0,0,0"
+            Grid.Column="1"
+            Grid.Row="2"
+            HorizontalAlignment="Right" />
+  </Grid>
+</Window>

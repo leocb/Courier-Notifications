@@ -21,9 +21,12 @@ public static class QrCode
 
         BitmapImage image = new();
         image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad;
         image.StreamSource = stream;
         image.EndInit();
 
         return image;
     }
+
+    public static BitmapImage ExampleImage => GetQrCode("https://hostname.com/join?channel=40d98a81-f4a0-4ce6-9e21-19803c1fdf4f&auth=40d98a81-f4a0-4ce6-9e21-19803c1fdf4f");
 }
