@@ -9,7 +9,4 @@ public class ServerController(WebSocketHandler wsHandler) : ControllerBase
 {
     [HttpGet("/")]
     public ActionResult GetRoot() => Ok("Welcome");
-
-    [HttpGet("id")]
-    public ActionResult GetServerId() => Ok(wsHandler.ServerId);
 }

@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewmodels="clr-namespace:CN.Desktop.Display.Viewmodels"
-        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewmodel}"
+        d:DataContext="{d:DesignInstance Type=viewmodels:RoleQrCodeItemViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -17,38 +17,42 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Autorizar Usuário"
-        Height="370"
-        Width="290"
+        Height="455"
+        Width="385"
         WindowStartupLocation="CenterOwner">
-  <Grid Margin="15,0,15,15">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="1*" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="1*" />
-      <ColumnDefinition Width="auto" />
-    </Grid.ColumnDefinitions>
-    <Image HorizontalAlignment="Stretch"
-           VerticalAlignment="Stretch"
-           Source="{Binding Source={x:Static helper:QrCode.ExampleImage}}"
-           Stretch="Uniform"
-           Grid.ColumnSpan="2" />
-    <TextBlock Margin="0,10"
-               Grid.Row="1"
-               Grid.ColumnSpan="2"
-               HorizontalAlignment="Center"
-               Text="Escaneie o QR-Code com a camera do celular"
-               Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
-    <TextBox Grid.Row="2"
-             Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-             materialDesign:HintAssist.Hint="Nome do Usuário"
-             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-    <Button Content="Confirmar"
-            Margin="10,0,0,0"
-            Grid.Column="1"
-            Grid.Row="2"
-            HorizontalAlignment="Right" />
-  </Grid>
+  <materialDesign:DialogHost Identifier="Qr">
+    <Grid Margin="15,0,15,15"
+          IsEnabled="{Binding IsNotBusy}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="1*" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="1*" />
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
+      <Image HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             Source="{Binding QrCodeImage}"
+             Stretch="Uniform"
+             Grid.ColumnSpan="2" />
+      <TextBlock Margin="0,10"
+                 Grid.Row="1"
+                 Grid.ColumnSpan="2"
+                 HorizontalAlignment="Center"
+                 Text="Escaneie o QR-Code com a camera do celular"
+                 Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
+      <TextBox Grid.Row="2"
+               Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+               materialDesign:HintAssist.Hint="Nome do Usuário"
+               Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+      <Button Command="{Binding ConfirmCommand}"
+              Content="Confirmar"
+              Margin="10,0,0,0"
+              Grid.Column="1"
+              Grid.Row="2"
+              HorizontalAlignment="Right" />
+    </Grid>
+  </materialDesign:DialogHost>
 </Window>

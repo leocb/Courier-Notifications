@@ -12,8 +12,8 @@ public partial class ChannelSettings : Window
     public ChannelSettings(Channel channel, ChannelWindowMode mode)
     {
         ChannelViewModel vm = new(channel, mode);
-        InitializeComponent();
         this.DataContext = vm;
         vm.CloseRequest += Close;
+        InitializeComponent();
     }
 }

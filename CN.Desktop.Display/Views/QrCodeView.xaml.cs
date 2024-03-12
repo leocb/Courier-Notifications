@@ -1,27 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace CN.Desktop.Display.Views
+using CN.Desktop.Display.Viewmodels;
+
+namespace CN.Desktop.Display.Views;
+
+/// <summary>
+/// Interaction logic for QrCodeView.xaml
+/// </summary>
+public partial class QrCodeView : Window
 {
-    /// <summary>
-    /// Interaction logic for QrCodeView.xaml
-    /// </summary>
-    public partial class QrCodeView : Window
+    public QrCodeView(Guid channelId)
     {
-        public QrCodeView()
-        {
-            InitializeComponent();
-        }
+        RoleQrCodeItemViewModel vm = new(channelId);
+        this.DataContext = vm;
+        vm.CloseRequest += Close;
+        InitializeComponent();
     }
 }

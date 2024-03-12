@@ -48,7 +48,7 @@ public class ChannelSelectViewModel : INotifyPropertyChanged
 
     public ICommand RefreshCommand => new CommandHandler(async () =>
     {
-        await ChannelManager.LoadChannelsFromServer();
+        await ChannelManager.GetAllChannelsFromServer();
         LoadChannelItemsViewModel();
     });
 }

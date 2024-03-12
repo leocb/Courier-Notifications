@@ -23,32 +23,14 @@ public static class RolesManager
 
     static RolesManager()
     {
+        client.Timeout = TimeSpan.FromSeconds(5);
         client.DefaultRequestHeaders.Clear();
         client.DefaultRequestHeaders.Add("User-Agent", "Courier Notifications Display");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
         client.DefaultRequestHeaders.Add("ownerId", ConnectionManager.OwnerId.ToString());
     }
 
-    public static async Task<List<AllowedSender>> Get(Guid channelId)
-    {
-        try
-        {
-            OnStatusChanged.Invoke(ManagerStatus.Busy);
-
-            using HttpRequestMessage request = new(
-            HttpMethod.Get,
-            $"{baseUrl}/api/channel/role?channelId={channelId}");
-
-            using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<AllowedSender>>(Options.JsonSerializer) ?? [];
-        }
-        finally
-        {
-            OnStatusChanged.Invoke(ManagerStatus.Available);
-        }
-    }
-
-    public static async Task GetAll()
+    public static async Task GetAllRolesFromServer()
     {
         try
         {
@@ -70,17 +52,32 @@ public static class RolesManager
             };
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
-            List<ChannelRoles> roleList = new(await response.Content.ReadFromJsonAsync<List<ChannelRoles>>(Options.JsonSerializer) ?? []);
+            List<ChannelRoles> channelRoleList = new(await response.Content.ReadFromJsonAsync<List<ChannelRoles>>(Options.JsonSerializer) ?? []);
 
-            Roles.Clear();
-            roleList.ForEach(role =>
-            {
-                Roles.Add(role.Id, new(role.AllowedSenders));
-            });
+            UpdateChannelRoleList(channelRoleList);
         }
         finally
         {
             OnStatusChanged.Invoke(ManagerStatus.Available);
+        }
+    }
+
+    private static void UpdateChannelRoleList(List<ChannelRoles> channelRoleList)
+    {
+        foreach (ChannelRoles channelRole in channelRoleList)
+        {
+            if (Roles.TryGetValue(channelRole.Id, out ObservableCollection<AllowedSender>? localRoles))
+            {
+                localRoles.Clear();
+                foreach (AllowedSender role in channelRole.AllowedSenders)
+                {
+                    localRoles.Add(role);
+                }
+            }
+            else
+            {
+                Roles.Add(channelRole.Id, new(channelRole.AllowedSenders));
+            }
         }
     }
 
@@ -121,7 +118,7 @@ public static class RolesManager
 
             using HttpRequestMessage request = new(
             HttpMethod.Delete,
-            $"{baseUrl}/api/channel/role/sender?channelId={channelId}?senderId={senderId}");
+            $"{baseUrl}/api/channel/role/sender?channelId={channelId}&senderId={senderId}");
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
 
@@ -135,4 +132,6 @@ public static class RolesManager
             OnStatusChanged.Invoke(ManagerStatus.Available);
         }
     }
+
+    public static void RemoveFromLocalList(Guid channelId) => Roles.Remove(channelId);
 }

@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:CN.Desktop.Display.Views"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewmodels="clr-namespace:CN.Desktop.Display.Viewmodels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:RolesViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -19,8 +21,9 @@
         Height="700"
         Width="600">
   <Window.Resources>
-    <DataTemplate x:Key="ChannelRow">
-      <Grid>
+    <DataTemplate x:Key="UserRow">
+      <Grid d:DataContext="{d:DesignInstance Type=viewmodels:RolesItemViewModel}"
+            IsEnabled="{Binding IsNotBusy}">
         <Grid.RowDefinitions>
           <RowDefinition />
           <RowDefinition />
@@ -33,24 +36,24 @@
 
         <StackPanel Margin="10"
                     Orientation="Horizontal">
-          <Button Style="{StaticResource MaterialDesignToolButton}"
+          <Button Command="{Binding DeleteCommand}"
+            Style="{StaticResource MaterialDesignToolButton}"
                   ToolTip="Excluir">
             <materialDesign:PackIcon Kind="Delete" />
           </Button>
         </StackPanel>
 
-        <TextBlock Text="Nome do usuario vai aqui"
+        <TextBlock Text="{Binding Name}"
                    TextTrimming="CharacterEllipsis"
                    Margin="0"
                    Grid.Column="1"
                    VerticalAlignment="Center"
                    Style="{StaticResource MaterialDesignBody1TextBlock}" />
-        <TextBlock Text="a5d9ecb2-9c7a-435a-8e97-c7f88d2430d8"
+        <TextBlock Text="{Binding Id}"
                    Margin="10"
                    Grid.Column="2"
                    VerticalAlignment="Center"
                    Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
-
         <Rectangle Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Margin="10,0"
@@ -61,65 +64,73 @@
     </DataTemplate>
   </Window.Resources>
 
-  <Grid ClipToBounds="False">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="1*" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="1*" />
-    </Grid.ColumnDefinitions>
+  <materialDesign:DialogHost Identifier="Roles">
 
-    <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp6"
-                              Mode="PrimaryDark">
+    <Grid ClipToBounds="False">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="1*" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="1*" />
+      </Grid.ColumnDefinitions>
 
-      <Grid Margin="10">
-        <StackPanel>
-          <TextBlock Margin="20,0,0,0"
-                     Text="Usuários permitidos"
-                     Style="{StaticResource MaterialDesignHeadline4TextBlock}" />
-          <TextBlock Margin="20,0,0,0"
-                     Text="Canal: c55c71a6-7f9d-4bef-a014-2eac4afa5dd4"
-                     Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
-        </StackPanel>
+      <materialDesign:ColorZone materialDesign:ElevationAssist.Elevation="Dp6"
+                                Mode="PrimaryDark">
 
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
-          <Button x:Name="refresh"
-                  Margin="0,0,10,0"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Center"
-                  Style="{StaticResource MaterialDesignIconForegroundButton}"
-                  ToolTip="Atualizar">
-            <materialDesign:PackIcon Kind="Refresh" />
-          </Button>
-          <Button x:Name="Add"
-                  HorizontalAlignment="Right"
-                  VerticalAlignment="Center"
-                  Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
-                  ToolTip="Novo Canal">
-            <materialDesign:PackIcon Kind="Add" />
-          </Button>
-        </StackPanel>
-      </Grid>
-    </materialDesign:ColorZone>
-
-    <ScrollViewer Grid.Row="1"
-                  VerticalAlignment="Stretch"
-                  VerticalScrollBarVisibility="Auto">
-      <StackPanel>
-        <materialDesign:Card Margin="10"
-                             HorizontalAlignment="Stretch"
-                             VerticalAlignment="Top"
-                             UniformCornerRadius="10"
-                             materialDesign:ElevationAssist.Elevation="Dp3">
+        <Grid Margin="10">
           <StackPanel>
-            <TextBlock Margin="20"
-                       Text="Crie um usuário para mandar mensagens no canal." />
+            <TextBlock Margin="20,0,0,0"
+                       Text="Usuários permitidos"
+                       Style="{StaticResource MaterialDesignHeadline4TextBlock}" />
+            <TextBlock Margin="20,0,0,0"
+                       Text="{Binding ChannelInfo}"
+                       Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
           </StackPanel>
-        </materialDesign:Card>
-      </StackPanel>
-    </ScrollViewer>
-  </Grid>
+
+          <StackPanel Orientation="Horizontal"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center">
+            <Button Command="{Binding RefreshCommand}"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignIconForegroundButton}"
+                    ToolTip="Atualizar">
+              <materialDesign:PackIcon Kind="Refresh" />
+            </Button>
+            <Button Command="{Binding NewRoleCommand}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                    ToolTip="Novo Canal">
+              <materialDesign:PackIcon Kind="Add" />
+            </Button>
+          </StackPanel>
+        </Grid>
+      </materialDesign:ColorZone>
+
+      <ScrollViewer Grid.Row="1"
+                    VerticalAlignment="Stretch"
+                    VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <materialDesign:Card Margin="10"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Top"
+                               UniformCornerRadius="10"
+                               materialDesign:ElevationAssist.Elevation="Dp3">
+            <StackPanel>
+              <TextBlock Margin="20"
+                         Visibility="{Binding NoRoles}"
+                         Text="Crie um usuário para mandar mensagens no canal." />
+
+              <ItemsControl ItemsSource="{Binding RolesItems}"
+                            ItemTemplate="{StaticResource UserRow}" />
+            </StackPanel>
+          </materialDesign:Card>
+          
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </materialDesign:DialogHost>
 </Window>

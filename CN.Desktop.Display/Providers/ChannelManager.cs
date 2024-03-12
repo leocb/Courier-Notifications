@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 using CN.Models;
 using CN.Models.Channels;
-using CN.Models.Exceptions;
 
 namespace CN.Desktop.Display.Providers;
 
@@ -22,7 +21,7 @@ public static class ChannelManager
     private static readonly HttpClient client = new();
     private static readonly string baseUrl = Properties.Settings.Default.ServerUrl;
 
-    public static ObservableCollection<Channel> Channels { get; private set; } = [];
+    public static ObservableCollection<Channel> Channels { get; } = [];
 
     static ChannelManager()
     {
@@ -33,7 +32,7 @@ public static class ChannelManager
         client.DefaultRequestHeaders.Add("ownerId", ConnectionManager.OwnerId.ToString());
     }
 
-    public static async Task LoadChannelsFromServer()
+    public static async Task GetAllChannelsFromServer()
     {
         try
         {
@@ -55,32 +54,16 @@ public static class ChannelManager
             };
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
-            Channels = new(await response.Content.ReadFromJsonAsync<List<Channel>>(Options.JsonSerializer) ?? []);
-        }
-        finally
-        {
-            OnStatusChanged.Invoke(ManagerStatus.Available);
-        }
-    }
 
-    public static async Task<Channel> Get(Guid channelId)
-    {
-        try
-        {
-            OnStatusChanged.Invoke(ManagerStatus.Busy);
+            List<Channel>? loadedChannels = await response.Content.ReadFromJsonAsync<List<Channel>>(Options.JsonSerializer) ?? [];
 
-            Channel? channel;
-            using HttpRequestMessage request = new(
-                HttpMethod.Get,
-                $"{baseUrl}/api/channel?channelId={channelId}");
+            Channels.Clear();
+            foreach (Channel channel in loadedChannels)
+            {
+                Channels.Add(channel);
+            }
 
-            using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
-            channel = await response.Content.ReadFromJsonAsync<Channel>(Options.JsonSerializer);
-
-            if (channel is null)
-                throw new CourierException("Channel data failed to load");
-
-            return channel;
+            await RolesManager.GetAllRolesFromServer();
         }
         finally
         {
@@ -109,6 +92,7 @@ public static class ChannelManager
             _ = Properties.Settings.Default.ServerChannels.Add(channel.Id.ToString());
             Properties.Settings.Default.Save();
             Channels.Add(channel);
+            await RolesManager.GetAllRolesFromServer();
         }
         finally
         {
@@ -152,6 +136,7 @@ public static class ChannelManager
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
             _ = Channels.Remove(Channels.First(c => c.Id == channelId));
+            RolesManager.RemoveFromLocalList(channelId);
         }
         finally
         {

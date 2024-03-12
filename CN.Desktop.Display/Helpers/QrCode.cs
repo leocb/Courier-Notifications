@@ -8,14 +8,14 @@ namespace CN.Desktop.Display.Helpers;
 public static class QrCode
 {
     /// <summary>
-    /// Generates a BitmapImage QRCode from a object's ToString() function 
+    /// Generates a BitmapImage QRCode from a string
     /// </summary>
-    /// <param name="data">object to be ToString()'ed</param>
+    /// <param name="content">The QRCode content</param>
     /// <returns>A WPF Compatible Bitmap Image</returns>
-    public static BitmapImage GetQrCode(object data)
+    public static BitmapImage Generate(string content)
     {
         using MemoryStream stream = new();
-        QRCodeData qrCodeData = new QRCodeGenerator().CreateQrCode(data.ToString(), QRCodeGenerator.ECCLevel.Q);
+        QRCodeData qrCodeData = new QRCodeGenerator().CreateQrCode(content.ToString(), QRCodeGenerator.ECCLevel.M);
         new QRCode(qrCodeData).GetGraphic(20).Save(stream, ImageFormat.Bmp);
         stream.Position = 0;
 
@@ -28,5 +28,5 @@ public static class QrCode
         return image;
     }
 
-    public static BitmapImage ExampleImage => GetQrCode("https://hostname.com/join?channel=40d98a81-f4a0-4ce6-9e21-19803c1fdf4f&auth=40d98a81-f4a0-4ce6-9e21-19803c1fdf4f");
+    public static BitmapImage ExampleImage => Generate("https://hostname.com/join?channel=40d98a81-f4a0-4ce6-9e21-19803c1fdf4f&auth=40d98a81-f4a0-4ce6-9e21-19803c1fdf4f");
 }
