@@ -1,3 +1,0 @@
-type Settings = {
-  locale: String
-}
