@@ -1,0 +1,19 @@
+﻿@page "/"
+
+<PageTitle>Courier Notifications</PageTitle>
+
+<h1>Bem-vindo!</h1>
+
+<p>Abra o menu e escolha o canal para enviar uma notificação.</p>
+<p>Ou toque no botão abaixo para adicionar um novo canal.</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Adicionar Canal</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
