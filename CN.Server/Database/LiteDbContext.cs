@@ -9,10 +9,13 @@ public class LiteDbContext
     public static string ChannelDbName { get; } = "Channels.db";
     public LiteDatabase DatabaseInstance { get; }
 
-    public LiteDbContext(IOptions<LiteDbOptions> options)
+    public LiteDbContext()
     {
         BsonMapper.Global.EmptyStringToNull = false;
-        string dbBasePath = options.Value.DatabaseLocation;
+
+        string dbBasePath = OperatingSystem.IsWindows()
+            ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db")
+            : "/database";
 
         if (!Directory.Exists(dbBasePath))
             _ = Directory.CreateDirectory(dbBasePath);

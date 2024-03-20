@@ -22,7 +22,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<WebSocketHandler>();
 builder.Services.AddSingleton<ChannelDataProvider>();
 builder.Services.AddSingleton<LiteDbContext>();
-builder.Services.Configure<LiteDbOptions>(builder.Configuration.GetSection(LiteDbOptions.LiteDb));
 
 builder.Services.AddLocalization();
 

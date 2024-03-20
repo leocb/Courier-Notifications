@@ -12,6 +12,7 @@
     <Product>Courier Notifications Server</Product>
     <AssemblyVersion>1.0.0</AssemblyVersion>
 	<IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
+	<Authors>leocb</Authors>
   </PropertyGroup>
 
   <ItemGroup>
