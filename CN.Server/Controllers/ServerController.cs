@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CN.Server.Controllers;
 [Route("api/server")]
 [ApiController]
-public class ServerController(WebSocketHandler wsHandler) : ControllerBase
+public class ServerController() : ControllerBase
 {
     [HttpGet("/")]
     public ActionResult GetRoot() => Ok("Welcome");
