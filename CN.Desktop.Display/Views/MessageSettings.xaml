@@ -65,7 +65,8 @@
                VerticalAlignment="Center"
                Padding="0"
                Grid.Row="1" />
-    <TextBox Text="{Binding ServerUrl, Mode=TwoWay}"
+    <TextBox Name="ServerUrlTextBox"
+             Text="{Binding ServerUrl, Mode=TwoWay}"
              Margin="5,2"
              Grid.Column="1"
              Grid.Row="1"

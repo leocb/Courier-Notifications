@@ -60,6 +60,12 @@ public static class SocketManager
             return;
         }
 
+        if (ChannelManager.Channels.Count <= 0)
+        {
+            OnStatusChanged.Invoke(ConnectionStatus.Disconnected);
+            return;
+        }
+
         foreach (Guid channelId in ChannelManager.Channels.Select(c => c.Id))
         {
             await Open(channelId);
