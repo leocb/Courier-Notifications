@@ -1,21 +1,31 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 
 using CN.Desktop.Display.Helpers;
 using CN.Desktop.Display.Providers;
 using CN.Models.Messages;
+using CN.Models.Roles;
 
 using MaterialDesignThemes.Wpf;
 
 namespace CN.Desktop.Display.Viewmodels;
 
-public class MessageViewmodel(Message message) : INotifyPropertyChanged
+public class MessageViewmodel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     private void NotifyPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public Message Message { get; set; } = message;
+    public MessageViewmodel(Message message)
+    {
+        this.Message = message;
+        this.FromName = RolesManager.UserInfo[message.From].UserName;
+        this.ChannelName = RolesManager.UserInfo[message.From].ChannelName;
+    }
+
+    public Message Message { get; private set; }
     public string Text => this.Message.Text;
 
     public string StatusText => this.Status switch
@@ -27,9 +37,9 @@ public class MessageViewmodel(Message message) : INotifyPropertyChanged
         MessageStatus.Info => "INFORMAÇÃO",
         _ => "ERRO",
     };
-    public string DateTimeText => this.Message.Date.ToString("HH:mm:ss");
-    public string FromName => "";
-    public string ChannelName => "";
+    public string DateTimeText => this.Message.Date.ToString("yyyy/MM/dd HH:mm:ss");
+    public string FromName { get; private set; }
+    public string ChannelName { get; private set; }
 
     public PackIconKind Icon => this.Status switch
     {

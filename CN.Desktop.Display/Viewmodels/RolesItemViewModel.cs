@@ -8,9 +8,8 @@ using CN.Desktop.Display.Providers;
 using CN.Models.Roles;
 
 namespace CN.Desktop.Display.Viewmodels;
-public class RolesItemViewModel : INotifyPropertyChanged
+public class RolesItemViewModel
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
     public event Action SomethingChanged = delegate { };
 
     private readonly AllowedSender sender;

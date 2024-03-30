@@ -50,6 +50,7 @@ public static class SocketManager
         OnStatusChanged.Invoke(ConnectionStatus.Connecting);
         try
         {
+            await RolesManager.GetServerId();
             await ChannelManager.GetAllChannelsFromServer();
         }
         catch (Exception ex)

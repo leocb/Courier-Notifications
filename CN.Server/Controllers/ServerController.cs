@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace CN.Server.Controllers;
 [Route("api/server")]
 [ApiController]
-public class ServerController() : ControllerBase
+public class ServerController(WebSocketHandler wsHandler) : ControllerBase
 {
     [HttpGet("/")]
     public ActionResult GetRoot() => Ok("Welcome");
+
+    [HttpGet("id")]
+    public ActionResult GetServerId() => Ok(wsHandler.ServerId);
 }

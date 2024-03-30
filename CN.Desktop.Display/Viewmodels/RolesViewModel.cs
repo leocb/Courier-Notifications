@@ -24,12 +24,12 @@ public class RolesViewModel : INotifyPropertyChanged
         RolesManager.OnStatusChanged += RoleManager_OnStatusChanged;
         this.channelId = channelId;
         LoadRoleItemsViewModel();
-        RolesManager.Roles[channelId].CollectionChanged += (s, c) => { LoadRoleItemsViewModel(); };
+        RolesManager.ChannelInfo[channelId].CollectionChanged += (s, c) => { LoadRoleItemsViewModel(); };
     }
 
     private void LoadRoleItemsViewModel()
     {
-        ObservableCollection<AllowedSender> allowedSenders = RolesManager.Roles[this.channelId];
+        ObservableCollection<AllowedSender> allowedSenders = RolesManager.ChannelInfo[this.channelId];
         this.RolesItems = new(allowedSenders
             .Where(s => s.Id != ConnectionManager.OwnerId)
             .Select(s => new RolesItemViewModel(this.channelId, s)));

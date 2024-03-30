@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 using CN.Models;
+using CN.Models.Exceptions;
 using CN.Models.Roles;
 
 namespace CN.Desktop.Display.Providers;
@@ -19,7 +20,8 @@ public static class RolesManager
     private static readonly HttpClient client = new();
     private static readonly string baseUrl = Properties.Settings.Default.ServerUrl;
 
-    public static Dictionary<Guid, ObservableCollection<AllowedSender>> Roles { get; } = [];
+    public static Dictionary<Guid, ObservableCollection<AllowedSender>> ChannelInfo { get; } = [];
+    public static Dictionary<Guid, (string UserName, string ChannelName)> UserInfo { get; } = [];
 
     static RolesManager()
     {
@@ -28,6 +30,8 @@ public static class RolesManager
         client.DefaultRequestHeaders.Add("User-Agent", "Courier Notifications Display");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
         client.DefaultRequestHeaders.Add("ownerId", ConnectionManager.OwnerId.ToString());
+
+        UserInfo.Add(ConnectionManager.OwnerId, ("Info", "Display"));
     }
 
     public static async Task GetAllRolesFromServer()
@@ -53,7 +57,6 @@ public static class RolesManager
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
             List<ChannelRoles> channelRoleList = new(await response.Content.ReadFromJsonAsync<List<ChannelRoles>>(Options.JsonSerializer) ?? []);
-
             UpdateChannelRoleList(channelRoleList);
         }
         finally
@@ -66,7 +69,8 @@ public static class RolesManager
     {
         foreach (ChannelRoles channelRole in channelRoleList)
         {
-            if (Roles.TryGetValue(channelRole.Id, out ObservableCollection<AllowedSender>? localRoles))
+            // Update channel info
+            if (ChannelInfo.TryGetValue(channelRole.Id, out ObservableCollection<AllowedSender>? localRoles))
             {
                 localRoles.Clear();
                 foreach (AllowedSender role in channelRole.AllowedSenders)
@@ -76,7 +80,21 @@ public static class RolesManager
             }
             else
             {
-                Roles.Add(channelRole.Id, new(channelRole.AllowedSenders));
+                ChannelInfo.Add(channelRole.Id, new(channelRole.AllowedSenders));
+            }
+
+            // Update user info
+            foreach (AllowedSender role in channelRole.AllowedSenders)
+            {
+                if (UserInfo.TryGetValue(role.Id, out (string UserName, string ChannelName) userInfo))
+                {
+                    userInfo.UserName = role.Name;
+                    userInfo.ChannelName = ChannelManager.Channels.First(x => x.Id == channelRole.Id).Name;
+                }
+                else
+                {
+                    UserInfo.Add(role.Id, (role.Name, ChannelManager.Channels.First(x => x.Id == channelRole.Id).Name));
+                }
             }
         }
     }
@@ -99,7 +117,8 @@ public static class RolesManager
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
 
-            if (Roles.TryGetValue(channelId, out ObservableCollection<AllowedSender>? roles))
+            UserInfo.Add(sender.Id, (sender.Name, ChannelManager.Channels.First(x => x.Id == channelId).Name));
+            if (ChannelInfo.TryGetValue(channelId, out ObservableCollection<AllowedSender>? roles))
             {
                 roles.Add(sender);
             }
@@ -122,7 +141,8 @@ public static class RolesManager
 
             using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
 
-            if (Roles.TryGetValue(channelId, out ObservableCollection<AllowedSender>? roles))
+            _ = UserInfo.Remove(senderId);
+            if (ChannelInfo.TryGetValue(channelId, out ObservableCollection<AllowedSender>? roles))
             {
                 _ = roles.Remove(roles.First(roles => roles.Id == senderId));
             }
@@ -133,5 +153,24 @@ public static class RolesManager
         }
     }
 
-    public static void RemoveFromLocalList(Guid channelId) => Roles.Remove(channelId);
+    public static void RemoveFromLocalList(Guid channelId) => ChannelInfo.Remove(channelId);
+
+    public static async Task GetServerId()
+    {
+        try
+        {
+            OnStatusChanged.Invoke(ManagerStatus.Busy);
+            using HttpRequestMessage request = new(
+            HttpMethod.Get,
+            $"{baseUrl}/api/server/id");
+
+            using HttpResponseMessage response = (await client.SendAsync(request)).EnsureSuccessStatusCode();
+            Guid serverId = await response.Content.ReadFromJsonAsync<Guid?>(Options.JsonSerializer) ?? throw new CourierException("Unknown Server");
+            _ = UserInfo.TryAdd(serverId, ("Info", "Servidor"));
+        }
+        finally
+        {
+            OnStatusChanged.Invoke(ManagerStatus.Available);
+        }
+    }
 }
