@@ -23,6 +23,8 @@ builder.Services.AddSingleton<WebSocketHandler>();
 builder.Services.AddSingleton<ChannelDataProvider>();
 builder.Services.AddSingleton<LiteDbContext>();
 
+builder.Services.AddCors();
+
 builder.Services.AddLocalization();
 
 builder.Services.Configure<RequestLocalizationOptions>(opts =>
@@ -40,6 +42,23 @@ WebSocketOptions webSocketOptions = new()
 {
     KeepAliveInterval = TimeSpan.FromMinutes(2)
 };
+
+string hostnameCors = Environment.GetEnvironmentVariable("CORS_HOSTNAME");
+app.UseCors(cors =>
+{
+    _ = cors.AllowCredentials();
+    _ = cors.AllowAnyMethod();
+    _ = cors.AllowAnyHeader();
+
+    if (string.IsNullOrEmpty(hostnameCors))
+    {
+        _ = cors.SetIsOriginAllowed(origin => true);
+    }
+    else
+    {
+        _ = cors.WithOrigins(hostnameCors);
+    }
+});
 
 app.UseRequestLocalization();
 
