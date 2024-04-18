@@ -9,6 +9,7 @@
     <Import_RootNamespace>CN.Models</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Channels\FieldExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\CourierException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Option.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Channels\Field.cs" />

@@ -34,10 +34,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_ConfirmAddLanguageFile = False
-		RESX_AutoCreateNewLanguageFiles = True
-		RESX_SortFileContentOnSave = True
 		SolutionGuid = {7A1BAD66-BA1B-4717-BBF0-56EBDA5A96B9}
+		RESX_SortFileContentOnSave = True
+		RESX_AutoCreateNewLanguageFiles = True
+		RESX_ConfirmAddLanguageFile = False
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		CN.Models\CN.Models.projitems*{21b832db-83e8-4671-9033-54cf05dd79cf}*SharedItemsImports = 5

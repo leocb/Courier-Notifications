@@ -20,8 +20,6 @@
         <p>Para adicionar um canal,
             escaneie o QR Code no computador que exibe os recados
             utilizando a camera do seu celular.</p>
-
-        <p>@local</p>
     }
     else
     {
@@ -41,11 +39,8 @@
 @code {
     private string error = "";
 
-    private string local;
-
     protected override async Task OnInitializedAsync()
     {
-        local = await LocalStorage.GetItemAsStringAsync("KnownChannels") ?? "unkown";
         await ChannelManager.SetLocalStorage(LocalStorage);
         await ChannelManager.GetAllChannelsFromServer();
     }

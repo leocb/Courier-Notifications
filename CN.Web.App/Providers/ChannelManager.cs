@@ -6,6 +6,7 @@ using Blazored.LocalStorage;
 
 using CN.Models;
 using CN.Models.Channels;
+using CN.Models.Messages;
 
 namespace CN.Web.App.Providers;
 
@@ -37,7 +38,7 @@ public class ChannelManager(HttpClient client)
         {
             OnStatusChanged.Invoke(ManagerStatus.Busy);
 
-            List<string> channelIds = KnownChannels.Select(c => c.Channel.ToString()).ToList();
+            List<string> channelIds = this.KnownChannels.Select(c => c.Channel.ToString()).ToList();
 
             if (channelIds.Count <= 0)
                 return;
@@ -66,6 +67,33 @@ public class ChannelManager(HttpClient client)
         {
             OnStatusChanged.Invoke(ManagerStatus.Available);
         }
+    }
+
+    public async Task Send(Channel channel)
+    {
+        Guid senderId = this.KnownChannels.Find(c => c.Channel == channel.Id)?.User
+            ?? throw new ArgumentException("Invalid Channel.");
+
+        Message message = new()
+        {
+            Date = DateTime.Now,
+            Status = MessageStatus.Queued,
+            From = senderId,
+            Text = channel.Fields.GetChannelFinalText()
+        };
+
+        using HttpRequestMessage request = new(
+                HttpMethod.Post,
+                $"api/message/send?channel={channel.Id}")
+        {
+            Content = new StringContent(
+                JsonSerializer.Serialize(message, Options.JsonSerializer),
+                null,
+                "application/json")
+        };
+
+        using HttpResponseMessage response = await this.client.SendAsync(request);
+        _ = response.EnsureSuccessStatusCode();
     }
 
     public async Task Add(Guid channelId, Guid userId)

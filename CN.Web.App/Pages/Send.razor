@@ -1,0 +1,71 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject Providers.ChannelManager ChannelManager
+@page "/send/{id:guid}"
+@using CN.Models.Channels
+
+<PageTitle>Courier Notifications</PageTitle>
+
+<div class="container">
+
+    <h1>@channel?.Name</h1>
+    <hr />
+
+    @if (channel is null)
+    {
+        <h3 class="text-danger">Canal não encontrado</h3>
+        <p>
+            Mas afinal, como você chegou aqui?
+        </p>
+    }
+    else
+    {
+        <div class="d-grid">
+            @foreach (var field in channel.Fields)
+            {
+                <div class="input-group">
+                    <span class="input-group-text">@field.Name</span>
+                    <input class="form-control" type="@GetInputType(field.IsNumeric)" @bind="field.Value" @bind:event="oninput" @bind:after="UpdateFinalValue" />
+                </div>
+            }
+
+            <hr/>
+            <div class="rounded-3 p-3 mb-2 bg-secondary-subtle">
+                <h5 class="mb-0">Mensagem final:</h5>
+                @messagePreview
+            </div>
+
+            <button class="btn btn-primary" @onclick="SendMessage">Enviar</button>
+        </div>
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+    Guid channelId;
+    private string error = "";
+    private string inputType = "text";
+
+    private string messagePreview = "";
+
+    Channel? channel;
+
+    private string GetInputType(bool isNumeric) => isNumeric ? "number" : "text";
+
+    private async Task SendMessage()
+    {
+        if (channel is null) return;
+        await ChannelManager.Send(channel);
+    }
+
+    private void UpdateFinalValue()
+    {
+        messagePreview = channel?.Fields.GetChannelFinalText() ?? "";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        channel = ChannelManager.Channels.FirstOrDefault(c => c.Id == id);
+    }
+}
