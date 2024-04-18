@@ -3,17 +3,15 @@
 
 
 <div class="page">
-<Install />
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
+    <Install />
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">Sobre</a>
-        </div>
+        <header class="top-row" style="justify-content:center">
+            <a href="/">
+                <img class="text-center" src="favicon.svg"  height="50" width="50"/>
+            </a>   
+        </header>
 
-        <article class="content px-4">
+        <article class="content container-fluid">
             @Body
         </article>
     </main>

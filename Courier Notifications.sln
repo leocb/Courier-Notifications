@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Desktop.Display", "CN.De
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Server", "CN.Server\CN.Server.csproj", "{C2484476-50DD-4345-9236-7CBA09810872}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CN.Web.App", "CN.Web.App\CN.Web.App.csproj", "{21B832DB-83E8-4671-9033-54CF05DD79CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CN.Web.App", "CN.Web.App\CN.Web.App.csproj", "{21B832DB-83E8-4671-9033-54CF05DD79CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,12 +34,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7A1BAD66-BA1B-4717-BBF0-56EBDA5A96B9}
-		RESX_SortFileContentOnSave = True
-		RESX_AutoCreateNewLanguageFiles = True
 		RESX_ConfirmAddLanguageFile = False
+		RESX_AutoCreateNewLanguageFiles = True
+		RESX_SortFileContentOnSave = True
+		SolutionGuid = {7A1BAD66-BA1B-4717-BBF0-56EBDA5A96B9}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		CN.Models\CN.Models.projitems*{21b832db-83e8-4671-9033-54cf05dd79cf}*SharedItemsImports = 5
 		CN.Models\CN.Models.projitems*{93389f29-b538-4017-a40d-4286a0253370}*SharedItemsImports = 13
 		CN.Models\CN.Models.projitems*{c2484476-50dd-4345-9236-7cba09810872}*SharedItemsImports = 5
 		CN.Models\CN.Models.projitems*{e02199c6-615e-4c61-971e-a839155aed8e}*SharedItemsImports = 5

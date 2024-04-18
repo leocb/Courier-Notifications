@@ -1,19 +1,52 @@
-﻿@page "/"
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject Providers.ChannelManager ChannelManager
+@page "/"
 
 <PageTitle>Courier Notifications</PageTitle>
 
-<h1>Bem-vindo!</h1>
+<div class="container">
 
-<p>Abra o menu e escolha o canal para enviar uma notificação.</p>
-<p>Ou toque no botão abaixo para adicionar um novo canal.</p>
+    <h1>Enviar Notificação</h1>
+    <hr />
 
-<button class="btn btn-primary" @onclick="IncrementCount">Adicionar Canal</button>
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <h3 class="text-danger">Erro ao carregar canais</h3>
+        <p>@error</p>
+    }
+    else if (ChannelManager.Channels.Count <= 0)
+    {
+        <h3 class="text-danger">Nenhum canal encontrado</h3>
+        <p>Para adicionar um canal,
+            escaneie o QR Code no computador que exibe os recados
+            utilizando a camera do seu celular.</p>
+
+        <p>@local</p>
+    }
+    else
+    {
+        <h3>Escolha o canal desejado:</h3>
+        <div class="list-group">
+        @foreach (var channel in ChannelManager.Channels)
+        {
+            <a href="/send/@channel.Id" class="list-group-item list-group-item-action">
+                @channel.Name
+            </a>
+        }
+        </div>
+    }
+
+</div>
 
 @code {
-    private int currentCount = 0;
+    private string error = "";
 
-    private void IncrementCount()
+    private string local;
+
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        local = await LocalStorage.GetItemAsStringAsync("KnownChannels") ?? "unkown";
+        await ChannelManager.SetLocalStorage(LocalStorage);
+        await ChannelManager.GetAllChannelsFromServer();
     }
 }
