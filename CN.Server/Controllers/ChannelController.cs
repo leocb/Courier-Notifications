@@ -49,7 +49,7 @@ public class ChannelController(ChannelDataProvider channelProvider) : Controller
         return Ok(channelData);
     }
 
-    [HttpGet("bulk")]
+    [HttpPost("bulk")]
     public async Task<ActionResult<List<Channel>>> GetAllChannels(
         [FromBody] List<Guid> channelIdList
     )

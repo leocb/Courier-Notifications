@@ -44,7 +44,7 @@ public static class ChannelManager
                 return;
 
             using HttpRequestMessage request = new(
-                HttpMethod.Get,
+                HttpMethod.Post,
                 $"{baseUrl}/api/channel/bulk")
             {
                 Content = new StringContent(
