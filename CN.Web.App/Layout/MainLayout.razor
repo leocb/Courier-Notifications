@@ -1,4 +1,5 @@
 ﻿@using CN.Web.App.Components
+@using System.Reflection
 @inherits LayoutComponentBase
 
 
@@ -19,9 +20,14 @@
             <hr class="mt-0 mb-1"/>
             <p class="mb-1 fs-6">
                 <small>
-                    github.com/leocb - v1.0.0
+                    @version
                 </small>
             </p>
         </footer>
     </main>
 </div>
+
+@code
+{
+    private string version => $"github.com/leocb - {typeof(MainLayout).Assembly.GetName().Version}";
+}
