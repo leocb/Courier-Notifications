@@ -1,0 +1,63 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject Providers.ChannelManager ChannelManager
+@page "/join"
+@using CN.Models.Channels
+
+<PageTitle>Courier Notifications</PageTitle>
+
+<div class="container">
+
+    <h1>Adicionar Canal</h1>
+    <hr />
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <h3 class="text-danger">Algo deu errado, tente novamente.</h3>
+        <p>
+            <a class="mt-3 btn btn-primary" href="/">Lista de Canais</a>
+        </p>
+    }
+    else if(isBusy)
+    {
+        <h3>Adicionando...</h3>
+    }
+    else
+    {
+        <h3 class="text-success text-center">Canal adicionado com sucesso!</h3>
+
+        <div class="d-grid text-center mt-3">
+            <i class="display-1 text-success fa-solid fa-circle-check"></i>
+            <a class="mt-3 btn btn-primary" href="/">Ver Lista de Canais</a>
+        </div>
+
+    }
+
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public Guid channel { get; set; }
+    [SupplyParameterFromQuery]
+    public Guid auth { get; set; }
+
+    private string error = "";
+    private bool isBusy = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isBusy = true;
+            await ChannelManager.SetLocalStorage(LocalStorage);
+            await ChannelManager.AddAsync(channel, auth);
+        }
+        catch(Exception e)
+        {
+            error = e.Message;
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+}
