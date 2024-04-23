@@ -12,6 +12,7 @@ public class LiteDbContext
     public LiteDbContext()
     {
         BsonMapper.Global.EmptyStringToNull = false;
+        BsonMapper.Global.TrimWhitespace = false;
 
         string dbBasePath = OperatingSystem.IsWindows()
             ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db")
