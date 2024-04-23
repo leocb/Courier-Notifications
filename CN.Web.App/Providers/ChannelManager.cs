@@ -37,11 +37,15 @@ public class ChannelManager(HttpClient client)
         try
         {
             OnStatusChanged.Invoke(ManagerStatus.Busy);
+            this.Channels.Clear();
 
             List<string> channelIds = this.KnownChannels.Select(c => c.Channel.ToString()).ToList();
 
             if (channelIds.Count <= 0)
+            {
+                OnStatusChanged.Invoke(ManagerStatus.Available);
                 return;
+            }
 
             using HttpRequestMessage request = new(
                 HttpMethod.Post,
@@ -57,7 +61,6 @@ public class ChannelManager(HttpClient client)
 
             List<Channel>? loadedChannels = await response.Content.ReadFromJsonAsync<List<Channel>>(Options.JsonSerializer) ?? [];
 
-            this.Channels.Clear();
             foreach (Channel channel in loadedChannels)
             {
                 this.Channels.Add(channel);
@@ -71,14 +74,14 @@ public class ChannelManager(HttpClient client)
 
     public async Task Send(Channel channel)
     {
-        Guid senderId = this.KnownChannels.Find(c => c.Channel == channel.Id)?.User
+        Guid authId = this.KnownChannels.Find(c => c.Channel == channel.Id)?.Auth
             ?? throw new ArgumentException("Invalid Channel.");
 
         Message message = new()
         {
             Date = DateTime.Now,
             Status = MessageStatus.Queued,
-            From = senderId,
+            From = authId,
             Text = channel.Fields.GetChannelFinalText()
         };
 
@@ -96,7 +99,7 @@ public class ChannelManager(HttpClient client)
         _ = response.EnsureSuccessStatusCode();
     }
 
-    public async Task Add(Guid channelId, Guid userId)
+    public async Task AddAsync(Guid channelId, Guid authId)
     {
         if (this.localStorage is null)
             return;
@@ -105,13 +108,15 @@ public class ChannelManager(HttpClient client)
         ChannelUser? c = this.KnownChannels.Find(c => c.Channel == channelId);
         if (c is not null)
         {
-            c.User = userId;
+            c.Auth = authId;
         }
+
         // Create a new entry if it doesn't
         else
         {
-            this.KnownChannels.Add(new() { Channel = channelId, User = userId });
+            this.KnownChannels.Add(new() { Channel = channelId, Auth = authId });
         }
+
         // save to local storage
         await this.localStorage.SetItemAsync(this.localStorageKey, this.KnownChannels);
     }

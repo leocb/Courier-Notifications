@@ -12,29 +12,72 @@
 
     @if (channel is null)
     {
-        <h3 class="text-danger">Canal não encontrado</h3>
-        <p>
-            Mas afinal, como você chegou aqui?
-        </p>
+        <div class="d-grid">
+            <h3 class="text-danger">Canal não encontrado</h3>
+            <a class="mt-3 btn btn-primary" href="/">Voltar para lista de Canais</a>
+        </div>
+    }
+    else if (success)
+    {
+        <h3>Mensagem enviada com sucesso!</h3>
+
+        <div class="d-grid text-center mt-3">
+            <i class="display-1 text-success fa-solid fa-circle-check"></i>
+            <div class="rounded-3  mt-3 p-3 mb-2 bg-secondary-subtle">
+                <h5 class="mb-0">Mensagem:</h5>
+                <p class="text-start">@messagePreview</p>
+            </div>
+            <a class="mt-3 btn btn-primary" href="/">Voltar para lista de Canais</a>
+        </div>
     }
     else
     {
         <div class="d-grid">
-            @foreach (var field in channel.Fields)
-            {
-                <div class="input-group">
-                    <span class="input-group-text">@field.Name</span>
-                    <input class="form-control" type="@GetInputType(field.IsNumeric)" @bind="field.Value" @bind:event="oninput" @bind:after="UpdateFinalValue" />
-                </div>
-            }
+            <form>
+                @foreach (var field in channel.Fields)
+                {
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">@field.Name</span>
+                        <input 
+                            class="form-control @(field.ValidateField() ? "" : "is-invalid")"
+                            type="@GetInputType(field.IsNumeric)"
+                            Step="@GetInputStep(field.IsNumeric)"
+                            Pattern="@GetInputPattern(field.IsNumeric)"
+                            @bind="field.Value"
+                            @bind:event="oninput"
+                            @bind:after="UpdateFinalValue" />
+                    </div>
+                }
+            </form>
 
-            <hr/>
+            <hr class="mt-2"/>
             <div class="rounded-3 p-3 mb-2 bg-secondary-subtle">
                 <h5 class="mb-0">Mensagem final:</h5>
                 @messagePreview
             </div>
 
-            <button class="btn btn-primary" @onclick="SendMessage">Enviar</button>
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="card rounded-3 p-3 mb-2 bg-danger text-white">
+                    @((MarkupString)error)
+                </div>
+            }
+
+            <button 
+                class="btn @(sendDisabled? "btn-secondary" : "btn-primary") "
+                disabled="@sendDisabled"
+                @onclick="SendMessage">
+
+                @if(isBusy)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"/>
+                    <span>Enviando...</span>
+                }
+                else
+                {
+                    <span>Enviar</span>
+                }
+            </button>
         </div>
     }
 
@@ -44,27 +87,62 @@
     [Parameter]
     public Guid id { get; set; }
     Guid channelId;
+
     private string error = "";
+
     private string inputType = "text";
+    private string inputStep = "";
+    private string inputPattern = "";
 
     private string messagePreview = "";
+
+    private bool isBusy = false;
+    private bool allFieldsAreValid = false;
+
+    private bool success = false;
+
+    private bool sendDisabled => isBusy || !allFieldsAreValid;
 
     Channel? channel;
 
     private string GetInputType(bool isNumeric) => isNumeric ? "number" : "text";
+    private string GetInputStep(bool isNumeric) => isNumeric ? "1" : "";
+    private string GetInputPattern(bool isNumeric) => isNumeric ? "[0-9]" : "";
 
     private async Task SendMessage()
     {
         if (channel is null) return;
-        await ChannelManager.Send(channel);
+
+        if (!allFieldsAreValid)
+        {
+            error = "Preencha todos os campos corretamente.";
+            return;
+        }
+
+        try
+        {
+            error = "";
+            isBusy = true;
+            await ChannelManager.Send(channel);
+            success = true;
+        }
+        catch (Exception e)
+        {
+            error = $"<p>Não foi possível enviar.<br/>Servidor indisponível ou permissão removida.</p>Detalhes: {e.Message}";
+        }
+        finally
+        {
+            isBusy = false;
+        }
     }
 
     private void UpdateFinalValue()
     {
         messagePreview = channel?.Fields.GetChannelFinalText() ?? "";
+        allFieldsAreValid = channel?.Fields.IsAllValid() ?? false;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         channel = ChannelManager.Channels.FirstOrDefault(c => c.Id == id);
     }

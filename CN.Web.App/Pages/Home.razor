@@ -1,6 +1,9 @@
 ﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject Providers.ChannelManager ChannelManager
+@inject IJSRuntime JsRuntime
 @page "/"
+@using CN.Models.Channels
+@using CN.Web.App.Providers;
 
 <PageTitle>Courier Notifications</PageTitle>
 
@@ -14,22 +17,35 @@
         <h3 class="text-danger">Erro ao carregar canais</h3>
         <p>@error</p>
     }
-    else if (ChannelManager.Channels.Count <= 0)
+    else if (ChannelManager.Channels.Count <= 0 && !isBusy)
     {
-        <h3 class="text-danger">Nenhum canal encontrado</h3>
-        <p>Para adicionar um canal,
-            escaneie o QR Code no computador que exibe os recados
-            utilizando a camera do seu celular.</p>
+        <h3>Nenhum canal encontrado</h3>
+        <p>
+            Para adicionar um canal: Utilize a camera do seu celular e
+            escaneie o QR Code disponível no computador que exibe os recados
+        </p>
+    }
+    else if (isBusy)
+    {
+        <h3>Carregando...</h3>
     }
     else
     {
         <h3>Escolha o canal desejado:</h3>
-        <div class="list-group">
+        <div class="list-group mt-3">
         @foreach (var channel in ChannelManager.Channels)
         {
-            <a href="/send/@channel.Id" class="list-group-item list-group-item-action">
-                @channel.Name
-            </a>
+                <a href="/send/@channel.Id" class="list-group-item list-group-item-action flex-column align-items-start p-2">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div>
+                            <h5 class="mb-1">@channel.Name</h5>
+                            <small class="mb-1">@channel.Description</small>
+                        </div>
+                        <button @onclick:stopPropagation="true" @onclick:preventDefault="true" @onclick="() => DeleteChannel(channel)" class="btn text-danger">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
+                </a>
         }
         </div>
     }
@@ -38,10 +54,39 @@
 
 @code {
     private string error = "";
+    private bool isBusy = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await ChannelManager.SetLocalStorage(LocalStorage);
-        await ChannelManager.GetAllChannelsFromServer();
+        try
+        {
+            isBusy = true;
+            await ChannelManager.SetLocalStorage(LocalStorage);
+            await ChannelManager.GetAllChannelsFromServer();
+            isBusy = false;
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
+        }
+    }
+
+    private async Task DeleteChannel(Channel channel)
+    {
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", $"Deseja excluir o canal \"{channel.Name}\"?"))
+            return;
+
+        try
+        {
+            isBusy = true;
+            await ChannelManager.RemoveAsync(channel.Id);
+            await ChannelManager.GetAllChannelsFromServer();
+            isBusy = false;
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
+        }
+
     }
 }

@@ -3,5 +3,5 @@
 public class ChannelUser
 {
     public Guid Channel { get; set; }
-    public Guid User { get; set; }
+    public Guid Auth { get; set; }
 }
