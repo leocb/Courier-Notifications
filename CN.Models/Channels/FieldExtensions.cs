@@ -46,5 +46,14 @@ namespace CN.Models.Channels
             allFields.ForEach(f => { sb.Append(f.GetFieldFinalText()); });
             return sb.ToString();
         }
+        public static bool IsAllValid(this List<Field> allFields)
+        {
+            foreach (var field in allFields)
+            {
+                if (!field.ValidateField())
+                    return false;
+            }
+            return true;
+        }
     }
 }
