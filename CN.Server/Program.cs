@@ -17,24 +17,37 @@ builder.Services.AddControllers().AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(item);
     }
 });
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Swagger
+string? enableSwaggerEnv = Environment.GetEnvironmentVariable("ENABLE_SWAGGER");
+bool enableSwagger = !string.IsNullOrEmpty(enableSwaggerEnv) && enableSwaggerEnv.Equals("true");
+if (enableSwagger)
+{
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+}
+
+// Courier
 builder.Services.AddSingleton<WebSocketHandler>();
 builder.Services.AddSingleton<ChannelDataProvider>();
 builder.Services.AddSingleton<LiteDbContext>();
 
-builder.Services.AddCors();
-
+// Localization
 builder.Services.AddLocalization();
-
 builder.Services.Configure<RequestLocalizationOptions>(opts =>
 {
     string[] supportedCultures = ["en-US", "pt-BR"];
-    _ = opts.SetDefaultCulture(supportedCultures[1])
+    _ = opts.SetDefaultCulture(supportedCultures[0])
         .AddSupportedCultures(supportedCultures)
         .AddSupportedUICultures(supportedCultures);
     opts.ApplyCurrentCultureToResponseHeaders = true;
 });
+
+//CORS
+builder.Services.AddCors();
+
+
+// ----------------------------------------------- APP
 
 WebApplication app = builder.Build();
 
@@ -43,17 +56,20 @@ WebSocketOptions webSocketOptions = new()
     KeepAliveInterval = TimeSpan.FromMinutes(2)
 };
 
-string hostnameCors = Environment.GetEnvironmentVariable("CORS_HOSTNAME");
+// CORS Protection
+string? hostnameCors = Environment.GetEnvironmentVariable("CORS_HOSTNAME");
 app.UseCors(cors =>
 {
     _ = cors.AllowCredentials();
     _ = cors.AllowAnyMethod();
     _ = cors.AllowAnyHeader();
 
+    // Anyone
     if (string.IsNullOrEmpty(hostnameCors))
     {
         _ = cors.SetIsOriginAllowed(origin => true);
     }
+    // Only specified origins
     else
     {
         _ = cors.WithOrigins(hostnameCors);
@@ -64,8 +80,8 @@ app.UseRequestLocalization();
 
 app.UseWebSockets(webSocketOptions);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Swagger
+if (enableSwagger)
 {
     _ = app.UseSwagger();
     _ = app.UseSwaggerUI();
@@ -75,4 +91,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
