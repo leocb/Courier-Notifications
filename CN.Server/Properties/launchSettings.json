@@ -3,16 +3,17 @@
     "https": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ENABLE_SWAGGER": "true"
       },
       "dotnetRunMessages": true
     },
     "Docker": {
       "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       },
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/",
       "publishAllPorts": true,
       "useSSL": false
     }
