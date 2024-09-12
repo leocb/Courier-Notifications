@@ -1,6 +1,4 @@
-﻿using Blazored.LocalStorage;
-
-using CN.Web.App;
+﻿using CN.Web.App;
 using CN.Web.App.Providers;
 
 using Microsoft.AspNetCore.Components.Web;
@@ -25,7 +23,7 @@ builder.Services.AddScoped(c => new HttpClient() { BaseAddress = new(baseAddress
 
 // Other services
 builder.Services.AddScoped<ChannelManager>();
-builder.Services.AddBlazoredLocalStorageAsSingleton();
+builder.Services.AddLocalStorageServices();
 
 var app = builder.Build();
 

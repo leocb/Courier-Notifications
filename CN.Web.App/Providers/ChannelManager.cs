@@ -2,11 +2,11 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 
-using Blazored.LocalStorage;
-
 using CN.Models;
 using CN.Models.Channels;
 using CN.Models.Messages;
+
+using Microsoft.JSInterop;
 
 namespace CN.Web.App.Providers;
 
@@ -28,7 +28,7 @@ public class ChannelManager(HttpClient client)
         this.localStorage = localStorage;
         this.KnownChannels.Clear();
         this.KnownChannels.AddRange(
-            await this.localStorage.GetItemAsync<List<ChannelUser>>(this.localStorageKey) ?? []
+            this.localStorage.GetItem<List<ChannelUser>>(this.localStorageKey) ?? []
         );
     }
 
@@ -118,7 +118,7 @@ public class ChannelManager(HttpClient client)
         }
 
         // save to local storage
-        await this.localStorage.SetItemAsync(this.localStorageKey, this.KnownChannels);
+        this.localStorage.SetItem(this.localStorageKey, this.KnownChannels);
     }
 
     public async Task RemoveAsync(Guid channelId)
@@ -131,6 +131,6 @@ public class ChannelManager(HttpClient client)
             return;
 
         _ = this.KnownChannels.Remove(c);
-        await this.localStorage.SetItemAsync(this.localStorageKey, this.KnownChannels);
+        this.localStorage.SetItem(this.localStorageKey, this.KnownChannels);
     }
 }
