@@ -58,22 +58,24 @@ WebSocketOptions webSocketOptions = new()
 
 // CORS Protection
 string? hostnameCors = Environment.GetEnvironmentVariable("CORS_HOSTNAME");
-app.UseCors(cors =>
+app.UseCors(policy =>
 {
-    _ = cors.AllowCredentials();
-    _ = cors.AllowAnyMethod();
-    _ = cors.AllowAnyHeader();
+    _ = policy.AllowCredentials()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
 
     // Anyone
     if (string.IsNullOrEmpty(hostnameCors))
     {
-        _ = cors.SetIsOriginAllowed(origin => true);
+        _ = policy.AllowAnyOrigin();
     }
     // Only specified origins
     else
     {
-        _ = cors.WithOrigins(hostnameCors);
+        _ = policy.WithOrigins(hostnameCors);
     }
+
+    _ = policy.SetIsOriginAllowed(origin => true);
 });
 
 app.UseRequestLocalization();
