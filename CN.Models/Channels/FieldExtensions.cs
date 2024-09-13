@@ -30,6 +30,8 @@ namespace CN.Models.Channels
         {
             if (!field.ValidateField() && string.IsNullOrEmpty(field.Value)) return "";
 
+            if (string.IsNullOrEmpty(field.Value)) return "";
+
             if (field.IsUsingAlternate())
             {
                 return $"{field.TextBeforeValueAlternate}{field.Value}{field.TextAfterValueAlternate}";
