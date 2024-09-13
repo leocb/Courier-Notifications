@@ -7,6 +7,7 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 	<InvariantGlobalization>true</InvariantGlobalization>
 	<RunAOTCompilation>false</RunAOTCompilation>
+	<BlazorEnableCompression>true</BlazorEnableCompression>
   </PropertyGroup>
 
   <ItemGroup>
