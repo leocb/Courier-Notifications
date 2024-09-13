@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -42,12 +43,13 @@ public class RoleQrCodeItemViewModel : INotifyPropertyChanged
         }
     }
 
+    public string URL => $"{Properties.Settings.Default.FrontUrl}/join?channel={this.channelId}&auth={this.authId}";
+
     public ImageSource QrCodeImage
     {
         get
         {
-            string content = $"{Properties.Settings.Default.ServerUrl}/join?channel={this.channelId}&auth={this.authId}";
-            return QrCode.Generate(content);
+            return QrCode.Generate(URL);
         }
     }
 
@@ -62,5 +64,9 @@ public class RoleQrCodeItemViewModel : INotifyPropertyChanged
         {
             await DialogHelper.ShowMessage(e.Message, "Qr");
         }
+    });
+    public ICommand CopyCommand => new CommandHandler(() =>
+    {
+        Clipboard.SetText(URL);
     });
 }

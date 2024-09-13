@@ -17,7 +17,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Autorizar Usuário"
-        Height="455"
+        Height="460"
         Width="385"
         WindowStartupLocation="CenterOwner">
   <materialDesign:DialogHost Identifier="Qr">
@@ -27,11 +27,13 @@
         <RowDefinition Height="1*" />
         <RowDefinition Height="auto" />
         <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="1*" />
         <ColumnDefinition Width="auto" />
       </Grid.ColumnDefinitions>
+      
       <Image HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              Source="{Binding QrCodeImage}"
@@ -43,7 +45,24 @@
                  HorizontalAlignment="Center"
                  Text="Escaneie o QR-Code com a camera do celular"
                  Style="{StaticResource MaterialDesignCharacterCounterTextBlock}" />
+      
       <TextBox Grid.Row="2"
+               Margin="0,10,0,0"
+               IsReadOnly="True"
+               materialDesign:HintAssist.Hint="URL para autorização"
+               Text="{Binding URL, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+               Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+      <Button Command="{Binding CopyCommand}"
+              Style="{StaticResource MaterialDesignOutlinedButton}"
+              Content="Copiar"
+              Margin="10,0,0,0"
+              Grid.Column="1"
+              Grid.Row="2"
+              VerticalAlignment="Bottom"
+              HorizontalAlignment="Stretch" />
+      
+      <TextBox Grid.Row="3"
+               Margin="0,10,0,0"
                Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                materialDesign:HintAssist.Hint="Nome do Usuário"
                Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
@@ -51,7 +70,8 @@
               Content="Confirmar"
               Margin="10,0,0,0"
               Grid.Column="1"
-              Grid.Row="2"
+              Grid.Row="3"
+              VerticalAlignment="Bottom"
               HorizontalAlignment="Right" />
     </Grid>
   </materialDesign:DialogHost>
