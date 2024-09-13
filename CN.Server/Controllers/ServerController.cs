@@ -7,8 +7,8 @@ namespace CN.Server.Controllers;
 [ApiController]
 public class ServerController(WebSocketHandler wsHandler) : ControllerBase
 {
-    [HttpGet("/")]
-    public ActionResult GetRoot() => Ok("Welcome");
+    [HttpGet("/api")]
+    public ActionResult GetAPI() => Ok("Welcome");
 
     [HttpGet("id")]
     public ActionResult GetServerId() => Ok(wsHandler.ServerId);
