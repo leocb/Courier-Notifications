@@ -1,5 +1,6 @@
 ﻿@inject ILocalStorageService LocalStorage
 @inject Providers.ChannelManager ChannelManager
+@inject NavigationManager Navigation
 @page "/send/{id:guid}"
 @using CN.Models.Channels
 
@@ -10,14 +11,7 @@
     <h1>@channel?.Name</h1>
     <hr />
 
-    @if (channel is null)
-    {
-        <div class="d-grid">
-            <h3 class="text-danger">Canal não encontrado</h3>
-            <a class="mt-3 btn btn-primary" href="/">Voltar para lista de Canais</a>
-        </div>
-    }
-    else if (success)
+    @if (success)
     {
         <h3>Mensagem enviada com sucesso!</h3>
 
@@ -52,7 +46,7 @@
 
             <hr class="mt-2"/>
             <div class="rounded-3 p-3 mb-2 bg-secondary-subtle">
-                <h5 class="mb-0">Mensagem final:</h5>
+                <h5 class="mb-0">Mensagem:</h5>
                 @messagePreview
             </div>
 
@@ -145,5 +139,7 @@
     protected override void OnInitialized()
     {
         channel = ChannelManager.Channels.FirstOrDefault(c => c.Id == id);
+        if (channel is null)
+            Navigation.NavigateTo("/", replace: true);
     }
 }
