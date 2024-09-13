@@ -1,38 +1,75 @@
-﻿<div class="fullscreen container hide-when-installed">
+﻿<div class="fullscreen container hide-when-installed hide-desktop">
     <div class="mt-3 text-center">
         <h1>Courier Notifications</h1>
         <img class="img-fluid" src="/pwa-512x512.png" />
     </div>
     <article class="mb-5">
 
-    <h2 class="mt-3">Mas antes, salve esta página</h2>
-    <p>
-        Esta página da web funciona como um app.
-        <br />Devido a algumas limitações,
-        somente é suportado abrir essa página no modo app,
-        para fazer isso, siga essas instruções:
-    </p>
+        <h2 class="mt-3">Mas antes, salve esta página</h2>
+        <p>
+            Esta página da web funciona como um app.
+            <br />Devido a algumas limitações,
+            somente é suportado abrir essa página no modo app,
+            para fazer isso, siga essas instruções:
+        </p>
+        <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-dark" @onclick="ShowIphoneHowTo" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            iPhone
+                        </button>
+                    </h5>
+                </div>
 
-    <h3>iPhone</h3>
-    <ol>
-        <li>Abra esta página usando o navegador Safari</li>
-        <li>Toque no ícone de compartilhar</li>
-        <li>Selecione "Salvar na tela inicial"</li>
-        <li>Feche o navegador</li>
-        <li>Abra o novo App "Courier" a partir da tela inicial</li>
-    </ol>
-
-    <h3>Android</h3>
-    <ol>
-        <li>Abra esta página usando o navegador Chrome</li>
-        <li>Toque no ícone dos três pontinhos (menu)</li>
-        <li>Selecione "Salvar na tela inicial"</li>
-        <li>Feche o navegador</li>
-        <li>Abra o novo App "Courier" a partir da tela inicial</li>
-    </ol>
+                <div id="collapseOne" class="@(IphoneHowToActive ? "" : "collapse")" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <ol>
+                            <li>Abra esta página usando o navegador Safari</li>
+                            <li>Toque no ícone de compartilhar</li>
+                            <li>Selecione "Salvar na tela inicial"</li>
+                            <li>Feche o navegador</li>
+                            <li>Abra o novo App "Courier" a partir da tela inicial</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                        <button class="btn btn-success" @onclick="ShowAndroidHowTo" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Android
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseTwo" class="@(AndroidHowToActive ? "" : "collapse")" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <ol>
+                            <li>Abra esta página usando o navegador Chrome</li>
+                            <li>Toque no ícone dos três pontinhos (menu)</li>
+                            <li>Selecione "Salvar na tela inicial"</li>
+                            <li>Feche o navegador</li>
+                            <li>Abra o novo App "Courier" a partir da tela inicial</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
     </article>
 </div>
 
 @code {
+    bool IphoneHowToActive = false;
+    bool AndroidHowToActive = false;
 
+    private void ShowIphoneHowTo()
+    {
+        IphoneHowToActive = true;
+        AndroidHowToActive = false;
+    }
+    private void ShowAndroidHowTo()
+    {
+        IphoneHowToActive = false;
+        AndroidHowToActive = true;
+    }
 }

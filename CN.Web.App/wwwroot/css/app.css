@@ -18,9 +18,14 @@ a, .btn-link {
     max-width: none;
     z-index: 100;
 }
-
 @media all and (display-mode: standalone) {
     .hide-when-installed {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .hide-desktop {
         display: none;
     }
 }
