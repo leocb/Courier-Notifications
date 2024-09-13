@@ -48,6 +48,7 @@
       <RowDefinition Height="1*" />
       <RowDefinition Height="1*" />
       <RowDefinition Height="1*" />
+      <RowDefinition Height="1*" />
       <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
@@ -60,7 +61,7 @@
                Style="{StaticResource MaterialDesignHeadline4TextBlock}"
                Margin="0,0,0,10" />
 
-    <TextBlock Text="URI do Servidor:"
+    <TextBlock Text="URI da API:"
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
@@ -73,40 +74,53 @@
              VerticalAlignment="Center">
     </TextBox>
 
+    <TextBlock Text="URI do App:"
+               Margin="10,0"
+               VerticalAlignment="Center"
+               Padding="0"
+               Grid.Row="2" />
+    <TextBox Name="FrontUrlTextBox"
+             Text="{Binding FrontUrl, Mode=TwoWay}"
+             Margin="5,2"
+             Grid.Column="1"
+             Grid.Row="2"
+             VerticalAlignment="Center">
+    </TextBox>
+
     <TextBlock Text="Tela:"
                Margin="10,0"
                VerticalAlignment="Center"
-               Grid.Row="2" />
+               Grid.Row="3" />
     <ComboBox x:Name="ScreensCombobox"
               SelectedItem="{Binding DisplayDeviceName, Mode=TwoWay}"
               Margin="5,2"
               Grid.Column="1"
-              Grid.Row="2"
+              Grid.Row="3"
               VerticalAlignment="Center" />
 
     <TextBlock Text="Fonte:"
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="3" />
+               Grid.Row="4" />
     <ComboBox x:Name="FontsComboBox"
               ItemsSource="{Binding Source={StaticResource SortedFontsCollection}}"
               SelectedItem="{Binding FontFamily, Mode=TwoWay}"
               Margin="5,2"
               Grid.Column="1"
-              Grid.Row="3"
+              Grid.Row="4"
               VerticalAlignment="Center" />
 
     <TextBlock Text="Espessura:"
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="4" />
+               Grid.Row="5" />
     <ComboBox x:Name="WeightComboBox"
               SelectedItem="{Binding FontWeight, Mode=TwoWay}"
               Margin="5,2"
               Grid.Column="1"
-              Grid.Row="4"
+              Grid.Row="5"
               VerticalAlignment="Center">
       <x:Static Member="FontWeights.Black" />
       <x:Static Member="FontWeights.Bold" />
@@ -124,12 +138,12 @@
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="5" />
+               Grid.Row="6" />
     <ComboBox x:Name="StyleComboBox"
               SelectedItem="{Binding FontStyle, Mode=TwoWay}"
               Margin="5,2"
               Grid.Column="1"
-              Grid.Row="5"
+              Grid.Row="6"
               VerticalAlignment="Center">
       <x:Static Member="FontStyles.Normal" />
       <x:Static Member="FontStyles.Italic" />
@@ -140,12 +154,12 @@
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="6" />
+               Grid.Row="7" />
     <TextBox Text="{Binding FontSize, Mode=TwoWay}"
              PreviewTextInput="NumberValidationTextBox"
              Margin="5,2"
              Grid.Column="1"
-             Grid.Row="6"
+             Grid.Row="7"
              VerticalAlignment="Center">
     </TextBox>
 
@@ -153,10 +167,10 @@
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="7" />
+               Grid.Row="8" />
     <xctk:ColorPicker x:Name="ForegroundColorPicker"
                       Grid.Column="1"
-                      Grid.Row="7"
+                      Grid.Row="8"
                       Margin="5,2"
                       VerticalContentAlignment="Stretch"
                       AvailableColorsSortingMode="HueSaturationBrightness"
@@ -173,10 +187,10 @@
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="8" />
+               Grid.Row="9" />
     <xctk:ColorPicker x:Name="BackgroundColorPicker"
                       Grid.Column="1"
-                      Grid.Row="8"
+                      Grid.Row="9"
                       Margin="5,2"
                       VerticalContentAlignment="Stretch"
                       AvailableColorsSortingMode="HueSaturationBrightness"
@@ -193,12 +207,12 @@
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="9" />
+               Grid.Row="10" />
     <TextBox Text="{Binding Speed, Mode=TwoWay}"
              PreviewTextInput="NumberValidationTextBox"
              Margin="5,2"
              Grid.Column="1"
-             Grid.Row="9"
+             Grid.Row="10"
              VerticalAlignment="Center">
     </TextBox>
 
@@ -206,19 +220,19 @@
                Margin="10,0"
                VerticalAlignment="Center"
                Padding="0"
-               Grid.Row="10" />
+               Grid.Row="11" />
     <CheckBox x:Name="AlwaysVisible"
               Content=""
               Grid.Column="1"
               Margin="5,2"
-              Grid.Row="10"
+              Grid.Row="11"
               VerticalAlignment="Center"
               IsChecked="{Binding AlwaysVisible, Mode=TwoWay}" />
     <Button x:Name="OKBtn"
             Content="OK"
             Grid.Column="1"
             Margin="10,5"
-            Grid.Row="11"
+            Grid.Row="12"
             IsDefault="True"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
