@@ -7,4 +7,4 @@ chmod +x dotnet-install.sh
 ./dotnet/dotnet --version
 ./dotnet/dotnet publish -c Release -o ./publish &
 wait
-echo "{\"ApiHostname\": \"$1\"}" > publish/wwwroot/appsettings.json
+echo "{\"ApiHostname\": \"https://$1/\"}" > publish/wwwroot/appsettings.json
