@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+            <section name="CN.Desktop.Display.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+        </sectionGroup>
+    </configSections>
+    <userSettings>
+        <CN.Desktop.Display.Properties.Settings>
+            <setting name="AlwaysVisible" serializeAs="String">
+                <value>True</value>
+            </setting>
+            <setting name="DisplayDeviceName" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="FontSize" serializeAs="String">
+                <value>60</value>
+            </setting>
+            <setting name="Speed" serializeAs="String">
+                <value>1200</value>
+            </setting>
+            <setting name="ServerUrl" serializeAs="String">
+                <value>https://localhost:48853</value>
+            </setting>
+            <setting name="ServerChannels" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <string>9228a990-e18c-45ea-be69-b232eca46126</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="OwnerId" serializeAs="String">
+                <value>00000000-0000-0000-0000-000000000000</value>
+            </setting>
+            <setting name="FrontUrl" serializeAs="String">
+                <value>https://localhost:48853</value>
+            </setting>
+        </CN.Desktop.Display.Properties.Settings>
+    </userSettings>
+</configuration>
