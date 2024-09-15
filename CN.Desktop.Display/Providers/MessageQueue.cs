@@ -27,19 +27,22 @@ public static class MessageQueue
     {
         while (!ct.IsCancellationRequested)
         {
-            MessageViewmodel vm = DisplayMessages.Take(ct);
-            if (vm.Status != MessageStatus.Queued)
+            if (!DisplayMessages.TryTake(out MessageViewmodel? messageViewModel, 1000, ct))
                 continue;
 
-            vm.Status = MessageStatus.BeingDisplayed;
+            if (messageViewModel is null || messageViewModel.Status != MessageStatus.Queued)
+                continue;
 
-            MessageWindow = new Views.MessageDisplay(vm.Message.Text);
+            messageViewModel.Status = MessageStatus.BeingDisplayed;
+
+            MessageWindow = new Views.MessageDisplay(messageViewModel.Message.Text);
 
             // this will block until the current message window is closed
             bool? completed = MessageWindow.ShowDialog();
+            MessageWindow.Close();
             MessageWindow = null;
 
-            vm.Status = completed ?? false ? MessageStatus.OK : MessageStatus.Canceled;
+            messageViewModel.Status = completed ?? false ? MessageStatus.OK : MessageStatus.Canceled;
         }
     }
 
