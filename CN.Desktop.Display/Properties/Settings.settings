@@ -44,5 +44,8 @@
     <Setting Name="FrontUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://localhost:48853</Value>
     </Setting>
+    <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

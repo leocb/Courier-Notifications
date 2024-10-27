@@ -10,7 +10,7 @@
     <Copyright>Leo Bottaro (github.com/leocb)</Copyright>
 	<Company>Leo Bottaro</Company>
 	<Product>Courier Notifications Server</Product>
-	<AssemblyVersion>1.0.1</AssemblyVersion>
+	<AssemblyVersion>1.0.2</AssemblyVersion>
 	<IncludeSourceRevisionInInformationalVersion>true</IncludeSourceRevisionInInformationalVersion>
 	<StartupObject>CN.Desktop.Display.App</StartupObject>
   </PropertyGroup>
