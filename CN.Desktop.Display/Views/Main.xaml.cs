@@ -14,7 +14,18 @@ public partial class Main : Window
     public Main()
     {
         InitializeComponent();
+        UpgradeConfig();
         this.DataContext = this.vm;
+    }
+
+    private static void UpgradeConfig()
+    {
+        if (Properties.Settings.Default.UpgradeRequired)
+        {
+            Properties.Settings.Default.Upgrade();
+            Properties.Settings.Default.UpgradeRequired = false;
+            Properties.Settings.Default.Save();
+        }
     }
 
     private void ConfigBtn_Click(object sender, RoutedEventArgs e)

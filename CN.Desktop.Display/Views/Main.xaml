@@ -14,7 +14,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Courier Notifications Display Server - v1.0.1"
+        Title="Courier Notifications Display Server - v1.0.2"
         Height="450"
         Width="800"
         ContentRendered="Window_ContentRendered"
