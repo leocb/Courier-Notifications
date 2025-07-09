@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   runApp(const MyApp());
@@ -92,7 +93,19 @@ class _MyHomePageState extends State<MyHomePage> {
         child: 
             MobileScanner(
               onDetect: (result) {
-                print(result.barcodes.first.rawValue);
+                final message = result.barcodes.first.rawValue ?? "error";
+                Fluttertoast.showToast(
+                  msg: message,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    webBgColor: "#000000",
+                    webPosition: "center",
+                    // time = length/6 because -> 1000 char/min (human average) -> /60 (char/sec) -> /3 (read 3 times) = ~6 
+                    timeInSecForIosWeb: (message.length/6).toInt(), 
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white,
+                    fontSize: 14.0,
+                );
               },
             ),
       ),
